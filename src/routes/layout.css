@@ -1,0 +1,241 @@
+@import 'tailwindcss';
+
+/* Метрично наближені запасні шрифти (поки вантажаться веб-шрифти — без стрибків вёрстки) */
+@font-face {
+	font-family: 'Fira XCond Fallback';
+	src: local('Arial Narrow Bold'), local('ArialNarrow-Bold'), local('Arial Narrow'), local('Impact');
+	font-weight: 900;
+	size-adjust: 100%;
+}
+@font-face {
+	font-family: 'Golos Fallback';
+	src: local('Arial'), local('ArialMT');
+	font-weight: 400 700;
+	size-adjust: 100%;
+}
+
+@theme {
+	--color-void: #0a0a0b;
+	--color-coal: #16171a;
+	--color-steel: #222428;
+	--color-iron: #34363c;
+	--color-chalk: #f4f4f0;
+	--color-ash: #a6a6a0;
+	--color-lime: #c8ff00;
+	--color-blaze: #ff5b1f;
+
+	--font-display: 'Fira XCond', 'Fira XCond Fallback', 'Arial Narrow', Impact, sans-serif;
+	--font-sans: 'Golos', 'Golos Fallback', system-ui, sans-serif;
+
+	--ease-punch: cubic-bezier(0.7, 0, 0.15, 1);
+	--ease-snap: cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+html {
+	background: var(--color-void);
+	color: var(--color-chalk);
+	-webkit-text-size-adjust: 100%;
+	scroll-padding-top: 5rem;
+}
+body {
+	font-family: var(--font-sans);
+	font-size: 1.0625rem;
+	line-height: 1.6;
+	overflow-x: clip;
+	-webkit-font-smoothing: antialiased;
+}
+::selection {
+	background: var(--color-lime);
+	color: var(--color-void);
+}
+:focus-visible {
+	outline: 3px solid var(--color-lime);
+	outline-offset: 3px;
+}
+strong,
+b {
+	font-weight: 700;
+}
+
+html.lenis,
+html.lenis body {
+	height: auto;
+}
+.lenis.lenis-smooth {
+	scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+	overflow: hidden;
+}
+
+@layer components {
+	.wrap {
+		width: 100%;
+		max-width: 1500px;
+		margin-inline: auto;
+		padding-inline: 1.25rem;
+	}
+	@media (min-width: 768px) {
+		.wrap {
+			padding-inline: 2.5rem;
+		}
+	}
+
+	/* Масивна вузька типографіка */
+	.mega {
+		font-family: var(--font-display);
+		font-weight: 900;
+		text-transform: uppercase;
+		line-height: 0.82;
+		letter-spacing: -0.01em;
+	}
+	.mega-outline {
+		color: transparent;
+		-webkit-text-stroke: 2px var(--color-chalk);
+	}
+	.tag {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		font-family: var(--font-display);
+		font-weight: 900;
+		text-transform: uppercase;
+		letter-spacing: 0.06em;
+		font-size: 0.95rem;
+		line-height: 1;
+	}
+
+	/* Кнопки: пружина на натискання (Spring у компоненті) + діагональна заливка */
+	.btn {
+		position: relative;
+		isolation: isolate;
+		overflow: hidden;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.65rem;
+		min-height: 3.5rem;
+		padding: 0 1.75rem;
+		font-family: var(--font-display);
+		font-weight: 900;
+		font-size: 1.25rem;
+		text-transform: uppercase;
+		letter-spacing: 0.03em;
+		white-space: nowrap;
+		clip-path: polygon(0.8rem 0, 100% 0, calc(100% - 0.8rem) 100%, 0 100%);
+		transition: color 0.25s var(--ease-punch);
+		-webkit-tap-highlight-color: transparent;
+	}
+	.btn::before {
+		content: '';
+		position: absolute;
+		inset: 0;
+		z-index: -1;
+		transform: translateX(-110%) skewX(-24deg);
+		transform-origin: left;
+		transition: transform 0.38s var(--ease-punch);
+	}
+	.btn:hover::before,
+	.btn:focus-visible::before {
+		transform: translateX(-5%) skewX(-24deg) scaleX(1.25);
+	}
+	.btn-lime {
+		background: var(--color-lime);
+		color: var(--color-void);
+	}
+	.btn-lime::before {
+		background: var(--color-chalk);
+	}
+	.btn-ghost {
+		background: var(--color-steel);
+		color: var(--color-chalk);
+	}
+	.btn-ghost::before {
+		background: var(--color-lime);
+	}
+	.btn-ghost:hover,
+	.btn-ghost:focus-visible {
+		color: var(--color-void);
+	}
+	.btn:focus-visible {
+		outline-offset: 5px;
+	}
+
+	/* Зерно поверх фото */
+	.grain::after {
+		content: '';
+		position: absolute;
+		inset: -50%;
+		pointer-events: none;
+		background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+		opacity: 0.16;
+		mix-blend-mode: overlay;
+	}
+	.motion .grain::after {
+		animation: grain 0.5s steps(4) infinite;
+	}
+}
+
+/* ───────── Діагональний «розріз» (поява як удар) ───────── */
+.motion [data-slash] {
+	clip-path: polygon(0 0, 0 0, -12% 100%, -12% 100%);
+	transition: clip-path 0.55s var(--ease-punch);
+	transition-delay: var(--d, 0ms);
+}
+.motion [data-slash].is-in {
+	clip-path: polygon(0 0, 112% 0, 100% 100%, -12% 100%);
+}
+.motion [data-rise] {
+	opacity: 0;
+	transform: translate3d(0, 1.25rem, 0) skewY(2deg);
+	transition:
+		opacity 0.45s var(--ease-punch),
+		transform 0.55s var(--ease-punch);
+	transition-delay: var(--d, 0ms);
+}
+.motion [data-rise].is-in {
+	opacity: 1;
+	transform: none;
+}
+
+/* Тряска поля з помилкою */
+.shake {
+	animation: shake 0.42s var(--ease-punch);
+}
+
+@keyframes shake {
+	15% {
+		transform: translateX(-9px) rotate(-1deg);
+	}
+	35% {
+		transform: translateX(8px) rotate(1deg);
+	}
+	55% {
+		transform: translateX(-6px);
+	}
+	75% {
+		transform: translateX(4px);
+	}
+}
+@keyframes grain {
+	25% {
+		transform: translate(-6%, 4%);
+	}
+	50% {
+		transform: translate(5%, -6%);
+	}
+	75% {
+		transform: translate(-3%, -2%);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.001ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.001ms !important;
+		scroll-behavior: auto !important;
+	}
+}
