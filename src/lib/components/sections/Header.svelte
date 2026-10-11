@@ -86,7 +86,7 @@
 	{#if menu}
 		<div
 			id="mobile-nav"
-			class="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-void lg:hidden"
+			class="fixed inset-x-0 top-16 bottom-0 h-[calc(100dvh-64px)] overflow-y-auto bg-void lg:hidden"
 			transition:fly={{ y: -16, duration: 220 }}
 		>
 			<nav aria-label="Мобільна навігація" class="wrap py-6">
