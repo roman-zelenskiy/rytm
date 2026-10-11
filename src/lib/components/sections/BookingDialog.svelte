@@ -12,11 +12,20 @@
 	});
 </script>
 
-<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_noninteractive_element_interactions -->
-<dialog bind:this={dialog} aria-labelledby="booking-title" onclose={() => booking.close()} onclick={(e) => e.target === dialog && dialog.close()}>
+<dialog
+	bind:this={dialog}
+	aria-labelledby="booking-title"
+	onclose={() => booking.close()}
+	onclick={(e) => e.target === dialog && dialog.close()}
+>
 	{#if booking.open}
 		<div class="panel">
-			<button type="button" class="absolute top-4 right-4 grid h-11 w-11 place-items-center bg-steel hover:bg-lime hover:text-void" aria-label="Закрити" onclick={() => dialog.close()}>
+			<button
+				type="button"
+				class="absolute top-4 right-4 grid h-11 w-11 place-items-center bg-steel hover:bg-lime hover:text-void"
+				aria-label="Закрити"
+				onclick={() => dialog.close()}
+			>
 				<Icon name="close" />
 			</button>
 			<p class="tag text-lime">Пробне — 0 грн</p>

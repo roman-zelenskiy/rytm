@@ -1,5 +1,4 @@
 import hero from '#lib/assets/photos/hero.jpg?enhanced&w=2200;1600;1100;750';
-import heroTexture from '#lib/assets/photos/hero.jpg?w=1600&format=webp';
 import functional from '#lib/assets/photos/functional.jpg?enhanced&w=1800;1200;800';
 import boxing from '#lib/assets/photos/boxing.jpg?enhanced&w=1800;1200;800';
 import stretching from '#lib/assets/photos/stretching.jpg?enhanced&w=1800;1200;800';
@@ -21,7 +20,6 @@ import gloves from '#lib/assets/photos/gloves.jpg?enhanced&w=1600;1000;700';
 
 export const img = {
 	hero,
-	heroTexture,
 	directions: { functional, boxing, stretching, personal },
 	coaches: { maksym: coachMaksym, olha: coachOlha, artem: coachArtem, iryna: coachIryna },
 	transformations: { andrii: trAndrii, sofia: trSofia, kateryna: trTeam },

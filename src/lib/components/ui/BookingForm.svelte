@@ -26,8 +26,17 @@
 	});
 
 	const errors = $derived({
-		name: name.trim().length < 2 ? 'Як до вас звертатися?' : !/^[\p{L}\s'’ʼ-]+$/u.test(name.trim()) ? 'Лише літери, будь ласка' : '',
-		phone: !phone ? 'Вкажіть номер — передзвонимо й підтвердимо' : !isValidPhone(phone) ? 'Номер неповний: +380 (XX) XXX-XX-XX' : '',
+		name:
+			name.trim().length < 2
+				? 'Як до вас звертатися?'
+				: !/^[\p{L}\s'’ʼ-]+$/u.test(name.trim())
+					? 'Лише літери, будь ласка'
+					: '',
+		phone: !phone
+			? 'Вкажіть номер — передзвонимо й підтвердимо'
+			: !isValidPhone(phone)
+				? 'Номер неповний: +380 (XX) XXX-XX-XX'
+				: '',
 		day: day ? '' : 'Оберіть зручний день'
 	});
 	const show = (f: Field) => (touched[f] || attempted) && !!errors[f];
@@ -53,7 +62,9 @@
 		if (bad.length) {
 			void shake(bad);
 			const first = bad[0];
-			document.getElementById(first === 'day' ? `${idPrefix}-day-0` : `${idPrefix}-${first}`)?.focus();
+			document
+				.getElementById(first === 'day' ? `${idPrefix}-day-0` : `${idPrefix}-${first}`)
+				?.focus();
 			return;
 		}
 		if (!navigator.onLine) {
@@ -76,15 +87,24 @@
 </script>
 
 {#if status === 'success'}
-	<div class="py-6 text-center" role="status" aria-live="polite" in:scale={{ start: 0.85, duration: 350 }}>
+	<div
+		class="py-6 text-center"
+		role="status"
+		aria-live="polite"
+		in:scale={{ start: 0.85, duration: 350 }}
+	>
 		<div class="stamp mx-auto grid h-24 w-24 place-items-center bg-lime text-void">
 			<Icon name="check" size={44} />
 		</div>
 		<p class="mega mt-6 text-5xl">Ви в ритмі, {name.trim().split(/\s+/)[0]}!</p>
 		<p class="mx-auto mt-3 max-w-sm text-ash">
-			Адміністратор напише в Telegram або передзвонить протягом 15 хвилин і закріпить місце на {daysFull[days.indexOf(day as (typeof days)[number])]?.toLowerCase()}.
+			Адміністратор напише в Telegram або передзвонить протягом 15 хвилин і закріпить місце на {daysFull[
+				days.indexOf(day as (typeof days)[number])
+			]?.toLowerCase()}.
 		</p>
-		<button type="button" class="tag mt-6 text-lime underline underline-offset-4" onclick={reset}>Записати ще когось</button>
+		<button type="button" class="tag mt-6 text-lime underline underline-offset-4" onclick={reset}
+			>Записати ще когось</button
+		>
 	</div>
 {:else}
 	<form novalidate {onsubmit} class="grid gap-5" aria-busy={status === 'loading'}>
@@ -129,11 +149,20 @@
 				<select id="{idPrefix}-dir" bind:value={direction}>
 					{#each bookingDirections as d (d)}<option value={d}>{d}</option>{/each}
 				</select>
-				<Icon name="right" size={18} class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 rotate-90 text-lime" />
+				<Icon
+					name="right"
+					size={18}
+					class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 rotate-90 text-lime"
+				/>
 			</div>
 		</div>
 
-		<fieldset class="field" class:shake={shaking.day} onanimationend={() => (shaking.day = false)} aria-describedby={show('day') ? `${idPrefix}-day-err` : undefined}>
+		<fieldset
+			class="field"
+			class:shake={shaking.day}
+			onanimationend={() => (shaking.day = false)}
+			aria-describedby={show('day') ? `${idPrefix}-day-err` : undefined}
+		>
 			<legend>Зручний день</legend>
 			<div class="grid grid-cols-7 gap-1.5">
 				{#each days as d, i (d)}
@@ -165,14 +194,20 @@
 
 		<Button type="submit" class="mt-1 w-full" disabled={status === 'loading'}>
 			{#if status === 'loading'}
-				<span class="h-4 w-4 animate-spin rounded-full border-2 border-void border-r-transparent" aria-hidden="true"></span>
+				<span
+					class="h-4 w-4 animate-spin rounded-full border-2 border-void border-r-transparent"
+					aria-hidden="true"
+				></span>
 				Надсилаємо…
 			{:else}
 				Записатися на пробне <Icon name="arrow" />
 			{/if}
 		</Button>
 		<p class="text-center text-xs text-ash">
-			Натискаючи кнопку, ви погоджуєтеся з <a href={resolve('/polityka-konfidentsiinosti')} class="underline underline-offset-2">політикою конфіденційності</a>
+			Натискаючи кнопку, ви погоджуєтеся з <a
+				href={resolve('/polityka-konfidentsiinosti')}
+				class="underline underline-offset-2">політикою конфіденційності</a
+			>
 		</p>
 	</form>
 {/if}

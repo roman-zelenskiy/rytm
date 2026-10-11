@@ -4,7 +4,11 @@
  *  - ударна хвиля-брижі з точки удару (на біт метронома або клік);
  *  - зерно плівки.
  */
-export type ImpactApi = { hit: (x?: number, y?: number) => void; setVelocity: (v: number) => void; dispose: () => void };
+export type ImpactApi = {
+	hit: (x?: number, y?: number) => void;
+	setVelocity: (v: number) => void;
+	dispose: () => void;
+};
 
 const vertex = /* glsl */ `
 attribute vec2 position;
@@ -71,7 +75,12 @@ export async function mountImpact(
 	const { Renderer, Program, Mesh, Triangle, Texture } = await import('ogl');
 	let renderer: InstanceType<typeof Renderer>;
 	try {
-		renderer = new Renderer({ canvas, dpr: Math.min(devicePixelRatio, 1.5), alpha: false, antialias: false });
+		renderer = new Renderer({
+			canvas,
+			dpr: Math.min(devicePixelRatio, 1.5),
+			alpha: false,
+			antialias: false
+		});
 	} catch {
 		return null;
 	}

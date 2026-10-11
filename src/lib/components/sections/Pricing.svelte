@@ -30,7 +30,12 @@
 				<SectionTitle eyebrow="Ціни без зірочок" title="Тарифи" id="taryfy-title" />
 			</div>
 			<div class="lg:col-span-5 lg:justify-self-end">
-				<div role="radiogroup" aria-label="Період оплати" class="switch relative grid grid-cols-3 bg-coal p-1.5" style:--idx={idx}>
+				<div
+					role="radiogroup"
+					aria-label="Період оплати"
+					class="switch relative grid grid-cols-3 bg-coal p-1.5"
+					style:--idx={idx}
+				>
 					<span class="puck" aria-hidden="true"></span>
 					{#each periods as p (p.id)}
 						<label class="opt" class:on={period === p.id}>
@@ -46,8 +51,16 @@
 		<p class="sr-only" aria-live="polite">Ціни показано для періоду: {periods[idx].label}</p>
 		<ul class="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 			{#each plans as p, i (p.id)}
-				<li class="plan flex flex-col p-7" class:featured={p.featured} use:inview={i * 80} data-rise>
-					{#if p.featured}<span class="tag absolute top-0 right-6 -translate-y-1/2 bg-blaze px-3 py-2 text-void">Хіт</span>{/if}
+				<li
+					class="plan flex flex-col p-7"
+					class:featured={p.featured}
+					use:inview={i * 80}
+					data-rise
+				>
+					{#if p.featured}<span
+							class="tag absolute top-0 right-6 -translate-y-1/2 bg-blaze px-3 py-2 text-void"
+							>Хіт</span
+						>{/if}
 					<h3 class="mega text-5xl">{p.name}</h3>
 					<p class="mt-1 text-sm opacity-80">{p.sub}</p>
 					<p class="mt-6 flex items-baseline gap-2">
@@ -56,19 +69,30 @@
 					</p>
 					<p class="mt-1 min-h-6 text-sm opacity-80">
 						{#if p.perMonth && period !== 'month'}
-							{fmt(p.price[period] * months[period])} грн за {period === 'year' ? 'рік' : '3 місяці'} · економія {fmt((p.price.month - p.price[period]) * months[period])} грн
+							{fmt(p.price[period] * months[period])} грн за {period === 'year'
+								? 'рік'
+								: '3 місяці'} · економія {fmt((p.price.month - p.price[period]) * months[period])} грн
 						{:else if !p.perMonth}
 							ціна не залежить від періоду
 						{/if}
 					</p>
 					<ul class="mt-6 grid flex-1 content-start gap-2.5">
-						{#each p.features as f (f)}<li class="flex gap-2"><Icon name="check" size={18} class="mt-1 shrink-0" />{f}</li>{/each}
+						{#each p.features as f (f)}<li class="flex gap-2">
+								<Icon name="check" size={18} class="mt-1 shrink-0" />{f}
+							</li>{/each}
 					</ul>
-					<Button variant={p.featured ? 'ghost' : 'lime'} class="mt-8 w-full" onclick={() => booking.show()}>Почати з пробного</Button>
+					<Button
+						variant={p.featured ? 'ghost' : 'lime'}
+						class="mt-8 w-full"
+						onclick={() => booking.show()}>Почати з пробного</Button
+					>
 				</li>
 			{/each}
 		</ul>
-		<p class="mt-6 text-sm text-ash">Перше тренування — безкоштовно для всіх тарифів. Оплата карткою, на рахунок ФОП або частинами до 6 місяців.</p>
+		<p class="mt-6 text-sm text-ash">
+			Перше тренування — безкоштовно для всіх тарифів. Оплата карткою, на рахунок ФОП або частинами
+			до 6 місяців.
+		</p>
 	</div>
 </section>
 

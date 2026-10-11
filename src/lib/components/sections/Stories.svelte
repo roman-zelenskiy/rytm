@@ -16,6 +16,7 @@
 	let ticks = $state(0);
 	let paused = $state(false);
 	let hover = $state(false);
+	let focused = $state(false); // фокус усередині плеєра — теж пауза (WCAG 2.2.2)
 	let visible = $state(false);
 	let lastBeat = -1;
 	let frame: HTMLElement;
@@ -33,7 +34,7 @@
 		untrack(() => {
 			if (b === lastBeat) return;
 			lastBeat = b;
-			if (paused || hover || !visible) return;
+			if (paused || hover || focused || !visible) return;
 			ticks += 1;
 			if (ticks >= BEATS) go(1);
 		});
@@ -61,7 +62,13 @@
 <section id="vidguky" aria-labelledby="vidguky-title" class="relative py-24 md:py-32">
 	<div class="wrap grid gap-12 lg:grid-cols-12 lg:items-center">
 		<div class="lg:col-span-6">
-			<SectionTitle eyebrow="Відгуки" title="Сторіз" accent="наших" id="vidguky-title" size="clamp(3.6rem, 11vw, 10rem)" />
+			<SectionTitle
+				eyebrow="Відгуки"
+				title="Сторіз"
+				accent="наших"
+				id="vidguky-title"
+				size="clamp(3.6rem, 11vw, 10rem)"
+			/>
 			<div class="mt-8 flex items-center gap-5">
 				<p class="mega text-7xl">{studio.rating.toString().replace('.', ',')}</p>
 				<div>
@@ -75,8 +82,21 @@
 			<ul class="mt-10 flex flex-wrap gap-4" aria-label="Обрати історію">
 				{#each stories as s, i (s.id)}
 					<li>
-						<button type="button" class="ring" class:on={i === idx} aria-current={i === idx} aria-label="Історія: {s.name}" onclick={() => pick(i)}>
-							<enhanced:img src={img.stories[s.id]} alt="" sizes="64px" class="h-full w-full object-cover" />
+						<button
+							type="button"
+							class="ring"
+							class:on={i === idx}
+							aria-current={i === idx}
+							aria-label="Історія: {s.name}"
+							onclick={() => pick(i)}
+						>
+							<enhanced:img
+								loading="lazy"
+								src={img.stories[s.id]}
+								alt=""
+								sizes="64px"
+								class="h-full w-full object-cover"
+							/>
 						</button>
 					</li>
 				{/each}
@@ -84,7 +104,8 @@
 		</div>
 
 		<div class="lg:col-span-5 lg:col-start-8">
-			<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions — регіон каруселі приймає стрілки з клавіатури, наведення лише ставить паузу -->
+			<!-- Регіон каруселі приймає стрілки з клавіатури, наведення лише ставить паузу -->
+			<!-- svelte-ignore a11y_no_noninteractive_tabindex, a11y_no_noninteractive_element_interactions -->
 			<div
 				bind:this={frame}
 				class="frame relative mx-auto aspect-[9/16] max-h-[78svh] w-full max-w-[420px] overflow-hidden bg-steel"
@@ -95,12 +116,26 @@
 				onkeydown={onkey}
 				onmouseenter={() => (hover = true)}
 				onmouseleave={() => (hover = false)}
+				onfocusin={() => (focused = true)}
+				onfocusout={(e) => (focused = frame.contains(e.relatedTarget as Node | null))}
 			>
 				{#each stories as s, i (s.id)}
 					<figure class="story absolute inset-0" class:active={i === idx} aria-hidden={i !== idx}>
-						<enhanced:img src={img.stories[s.id]} alt={s.alt} sizes="420px" class="h-full w-full object-cover" />
-						<div class="absolute inset-0 bg-gradient-to-b from-void/70 via-void/10 to-void/95"></div>
-						<blockquote class="mega absolute inset-x-0 bottom-0 p-5 text-[clamp(1.35rem,6.4vw,2rem)] leading-[1.04] sm:p-6">«{s.text}»</blockquote>
+						<enhanced:img
+							loading="lazy"
+							src={img.stories[s.id]}
+							alt={s.alt}
+							sizes="420px"
+							class="h-full w-full object-cover"
+						/>
+						<div
+							class="absolute inset-0 bg-gradient-to-b from-void/70 via-void/10 to-void/95"
+						></div>
+						<blockquote
+							class="mega absolute inset-x-0 bottom-0 p-5 text-[clamp(1.35rem,6.4vw,2rem)] leading-[1.04] sm:p-6"
+						>
+							«{s.text}»
+						</blockquote>
 						<figcaption class="absolute inset-x-0 top-0 flex items-center gap-3 px-4 pt-8">
 							<span class="tag bg-lime px-2 py-1 text-void">{s.dir}</span>
 							<span class="font-semibold">{s.name}</span>
@@ -110,16 +145,33 @@
 				{/each}
 
 				<!-- смужки прогресу: заповнюються ступенями в такт -->
-				<div class="absolute inset-x-3 top-3 z-10 grid gap-1" style:grid-template-columns="repeat({stories.length}, 1fr)" aria-hidden="true">
+				<div
+					class="absolute inset-x-3 top-3 z-10 grid gap-1"
+					style:grid-template-columns="repeat({stories.length}, 1fr)"
+					aria-hidden="true"
+				>
 					{#each stories as s, i (s.id)}
 						<span class="h-1 overflow-hidden bg-chalk/30">
-							<span class="block h-full origin-left bg-lime transition-transform duration-150" style:transform="scaleX({i < idx ? 1 : i > idx ? 0 : ticks / BEATS})"></span>
+							<span
+								class="block h-full origin-left bg-lime transition-transform duration-150"
+								style:transform="scaleX({i < idx ? 1 : i > idx ? 0 : ticks / BEATS})"
+							></span>
 						</span>
 					{/each}
 				</div>
 
-				<button type="button" class="tap left-0" aria-label="Попередня історія" onclick={() => go(-1)}></button>
-				<button type="button" class="tap right-0" aria-label="Наступна історія" onclick={() => go(1)}></button>
+				<button
+					type="button"
+					class="tap left-0"
+					aria-label="Попередня історія"
+					onclick={() => go(-1)}
+				></button>
+				<button
+					type="button"
+					class="tap right-0"
+					aria-label="Наступна історія"
+					onclick={() => go(1)}
+				></button>
 				<button
 					type="button"
 					class="absolute right-3 bottom-3 z-20 grid h-10 w-10 place-items-center bg-void/70 text-lime"
@@ -130,7 +182,9 @@
 					<Icon name={paused ? 'play' : 'pause'} size={18} />
 				</button>
 			</div>
-			<p class="mt-3 text-center text-sm text-ash">{idx + 1} / {stories.length} · стрілки ← → або тап по краях</p>
+			<p class="mt-3 text-center text-sm text-ash">
+				{idx + 1} / {stories.length} · стрілки ← → або тап по краях
+			</p>
 		</div>
 	</div>
 </section>

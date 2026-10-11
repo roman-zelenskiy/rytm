@@ -2,7 +2,10 @@ import { cubicOut } from 'svelte/easing';
 import { reducedMotion } from './env.ts';
 
 /** Діагональний «розріз» для svelte/transition: лише clip-path + transform */
-export function slash(_node: Element, { duration = 380, delay = 0, dir = 1 }: { duration?: number; delay?: number; dir?: 1 | -1 } = {}) {
+export function slash(
+	_node: Element,
+	{ duration = 380, delay = 0, dir = 1 }: { duration?: number; delay?: number; dir?: 1 | -1 } = {}
+) {
 	if (reducedMotion()) return { duration: 0 };
 	return {
 		duration,

@@ -1,6 +1,14 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
-	import { quiz, schedule, coaches, plans, days, directionLabel, type DirectionId } from '#lib/content.ts';
+	import {
+		quiz,
+		schedule,
+		coaches,
+		plans,
+		days,
+		directionLabel,
+		type DirectionId
+	} from '#lib/content.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { slash } from '#lib/motion/transitions.ts';
 	import SectionTitle from '#lib/components/ui/SectionTitle.svelte';
@@ -16,7 +24,12 @@
 	const current = $derived(quiz.steps[step]);
 	const done = $derived(step >= quiz.steps.length);
 
-	const goalToDir: Record<string, DirectionId> = { lose: 'functional', strong: 'functional', stress: 'boxing', flex: 'stretching' };
+	const goalToDir: Record<string, DirectionId> = {
+		lose: 'functional',
+		strong: 'functional',
+		stress: 'boxing',
+		flex: 'stretching'
+	};
 	const forecast: Record<string, string> = {
 		lose: '−4…−7 кг і мінус розмір одягу за 8 тижнів',
 		strong: '+25–40% у силових вправах за 8 тижнів',
@@ -63,9 +76,16 @@
 <section id="kviz" aria-labelledby="kviz-title" class="relative overflow-hidden py-24 md:py-32">
 	<div class="wrap grid gap-12 lg:grid-cols-12">
 		<div class="lg:col-span-5">
-			<SectionTitle eyebrow="30 секунд" title="Підбери" accent="програму" id="kviz-title" size="clamp(3.4rem, 7.4vw, 7.6rem)" />
+			<SectionTitle
+				eyebrow="30 секунд"
+				title="Підбери"
+				accent="програму"
+				id="kviz-title"
+				size="clamp(3.4rem, 7.4vw, 7.6rem)"
+			/>
 			<p class="mt-6 max-w-md text-lg text-ash">
-				Три питання — і ви знаєте, з якого напряму почати, скільки разів тренуватись і який тариф вигідніший саме вам.
+				Три питання — і ви знаєте, з якого напряму почати, скільки разів тренуватись і який тариф
+				вигідніший саме вам.
 			</p>
 		</div>
 
@@ -74,7 +94,12 @@
 				<!-- прогрес: сегменти кроків -->
 				<ol class="grid grid-cols-4 gap-2" aria-label="Прогрес">
 					{#each [...quiz.steps.map((s) => s.title), 'Результат'] as t, i (t)}
-						<li class="h-2 -skew-x-[20deg] transition-colors duration-300 {i <= step ? 'bg-lime' : 'bg-iron'}" aria-current={i === step ? 'step' : undefined}>
+						<li
+							class="h-2 -skew-x-[20deg] transition-colors duration-300 {i <= step
+								? 'bg-lime'
+								: 'bg-iron'}"
+							aria-current={i === step ? 'step' : undefined}
+						>
 							<span class="sr-only">{i + 1}. {t}</span>
 						</li>
 					{/each}
@@ -82,17 +107,32 @@
 
 				<div class="stage relative mt-8 grid">
 					{#key step}
-						<div class="[grid-area:1/1]" in:slash={{ dir, delay: 120 }} out:fade={{ duration: 120 }}>
+						<div
+							class="[grid-area:1/1]"
+							in:slash={{ dir, delay: 120 }}
+							out:fade={{ duration: 120 }}
+						>
 							{#if !done}
 								<fieldset>
 									<legend class="w-full">
 										<span class="tag text-ash">Крок {step + 1} з {quiz.steps.length}</span>
-										<span bind:this={stepHeading} tabindex="-1" class="mega mt-2 block text-5xl outline-none md:text-6xl">{current.title}</span>
+										<span
+											bind:this={stepHeading}
+											tabindex="-1"
+											class="mega mt-2 block text-5xl outline-none md:text-6xl"
+											>{current.title}</span
+										>
 									</legend>
 									<div class="mt-6 grid gap-3 sm:grid-cols-2">
 										{#each current.options as o (o.value)}
 											<label class="opt" class:on={answers[current.key] === o.value}>
-												<input type="radio" class="sr-only" name="quiz-{current.key}" value={o.value} bind:group={answers[current.key]} />
+												<input
+													type="radio"
+													class="sr-only"
+													name="quiz-{current.key}"
+													value={o.value}
+													bind:group={answers[current.key]}
+												/>
 												<span class="mega text-3xl">{o.label}</span>
 												<span class="text-sm text-ash">{o.hint}</span>
 											</label>
@@ -100,23 +140,40 @@
 									</div>
 								</fieldset>
 								<div class="mt-8 flex items-center justify-between gap-4">
-									<button type="button" class="tag text-ash hover:text-chalk disabled:opacity-0" disabled={step === 0} onclick={() => go(step - 1)}>
+									<button
+										type="button"
+										class="tag min-h-11 text-ash hover:text-chalk disabled:opacity-0"
+										disabled={step === 0}
+										onclick={() => go(step - 1)}
+									>
 										<Icon name="left" size={18} /> Назад
 									</button>
 									<Button disabled={!answers[current.key]} onclick={() => go(step + 1)}>
-										{step === quiz.steps.length - 1 ? 'Мій результат' : 'Далі'} <Icon name="arrow" />
+										{step === quiz.steps.length - 1 ? 'Мій результат' : 'Далі'}
+										<Icon name="arrow" />
 									</Button>
 								</div>
 							{:else if result}
 								<div aria-live="polite">
 									<span class="tag text-lime">Ваша програма</span>
-									<h3 bind:this={stepHeading} tabindex="-1" class="mega mt-2 text-6xl outline-none md:text-7xl">{directionLabel(result.d)}</h3>
-									<p class="mt-3 text-lg"><strong class="text-lime">Прогноз:</strong> {result.forecast}</p>
+									<h3
+										bind:this={stepHeading}
+										tabindex="-1"
+										class="mega mt-2 text-6xl outline-none md:text-7xl"
+									>
+										{directionLabel(result.d)}
+									</h3>
+									<p class="mt-3 text-lg">
+										<strong class="text-lime">Прогноз:</strong>
+										{result.forecast}
+									</p>
 									<dl class="mt-6 grid gap-4 sm:grid-cols-3">
 										<div class="border-l-4 border-lime pl-3">
 											<dt class="tag text-ash">Тариф</dt>
 											<dd class="mega mt-1 text-3xl">{result.plan.name}</dd>
-											<dd class="text-sm text-ash">від {result.plan.price.year.toLocaleString('uk-UA')} грн/міс</dd>
+											<dd class="text-sm text-ash">
+												від {result.plan.price.year.toLocaleString('uk-UA')} грн/міс
+											</dd>
 										</div>
 										<div class="border-l-4 border-lime pl-3">
 											<dt class="tag text-ash">Тренер</dt>
@@ -125,13 +182,24 @@
 										</div>
 										<div class="border-l-4 border-lime pl-3">
 											<dt class="tag text-ash">Найближчі</dt>
-											{#each result.slots as s (s.day + s.time)}<dd class="font-display text-lg font-black uppercase">{days[s.day]} {s.time}</dd>{/each}
+											{#each result.slots as s (s.day + s.time)}<dd
+													class="font-display text-lg font-black uppercase"
+												>
+													{days[s.day]}
+													{s.time}
+												</dd>{/each}
 										</div>
 									</dl>
-									{#if result.extra}<p class="mt-5 border-l-4 border-blaze pl-3 text-ash">{result.extra}</p>{/if}
+									{#if result.extra}<p class="mt-5 border-l-4 border-blaze pl-3 text-ash">
+											{result.extra}
+										</p>{/if}
 									<div class="mt-8 flex flex-wrap items-center gap-4">
-										<Button onclick={() => booking.show(bookingName[result!.d])}>Записатися на пробне <Icon name="arrow" /></Button>
-										<button type="button" class="tag text-ash hover:text-chalk" onclick={restart}>Пройти ще раз</button>
+										<Button onclick={() => booking.show(bookingName[result!.d])}
+											>Записатися на пробне <Icon name="arrow" /></Button
+										>
+										<button type="button" class="tag text-ash hover:text-chalk" onclick={restart}
+											>Пройти ще раз</button
+										>
 									</div>
 								</div>
 							{/if}

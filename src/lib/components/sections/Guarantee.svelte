@@ -7,16 +7,31 @@
 	import { booking } from '#lib/booking.svelte.ts';
 </script>
 
-<section id="harantiia" aria-labelledby="harantiia-title" class="relative isolate overflow-hidden py-24 md:py-36">
+<section
+	id="harantiia"
+	aria-labelledby="harantiia-title"
+	class="relative isolate overflow-hidden py-24 md:py-36"
+>
 	<div class="absolute inset-0 -z-10">
-		<enhanced:img src={img.guarantee} alt="" sizes="100vw" class="h-full w-full object-cover opacity-45" />
+		<enhanced:img
+			loading="lazy"
+			src={img.guarantee}
+			alt=""
+			sizes="100vw"
+			class="h-full w-full object-cover opacity-45"
+		/>
 		<div class="absolute inset-0 bg-gradient-to-r from-void via-void/85 to-void/40"></div>
 		<div class="grain absolute inset-0 overflow-hidden"></div>
 	</div>
-	<div class="stripe absolute top-0 -left-[10%] -z-10 h-full w-[18%] bg-blaze/90" aria-hidden="true"></div>
+	<div
+		class="stripe absolute top-0 -left-[10%] -z-10 h-full w-[18%] bg-blaze/90"
+		aria-hidden="true"
+	></div>
 
 	<div class="wrap">
-		<p class="tag text-lime" use:inview data-rise><span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Гарантія результату</p>
+		<p class="tag text-lime" use:inview data-rise>
+			<span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Гарантія результату
+		</p>
 		<h2 id="harantiia-title" class="mega mt-4 text-[clamp(4.2rem,15vw,15rem)]">
 			<span class="block origin-left" use:kinetic>
 				<span class="block" use:inview data-slash>8 тижнів</span>
@@ -27,7 +42,10 @@
 
 		<div class="mt-10 max-w-xl">
 			<Segments total={8} value={8} label="Програма триває 8 тижнів" />
-			<div class="mt-2 grid grid-cols-8 text-center font-display text-sm font-black text-ash" aria-hidden="true">
+			<div
+				class="mt-2 grid grid-cols-8 text-center font-display text-sm font-black text-ash"
+				aria-hidden="true"
+			>
 				{#each [1, 2, 3, 4, 5, 6, 7, 8] as w (w)}<span>{w}</span>{/each}
 			</div>
 		</div>
@@ -42,7 +60,10 @@
 				{/each}
 			</ol>
 			<div class="self-end lg:col-span-5">
-				<p class="text-ash">Гарантія діє для тарифів «Безлім» і «Персонально». Ціль і заміри фіксуємо письмово в перший тиждень — разом із тренером, реалістично й без «мінус 20 кг за місяць».</p>
+				<p class="text-ash">
+					Гарантія діє для тарифів «Безлім» і «Персонально». Ціль і заміри фіксуємо письмово в
+					перший тиждень — разом із тренером, реалістично й без «мінус 20 кг за місяць».
+				</p>
 				<Button class="mt-6" onclick={() => booking.show()}>Прийняти виклик</Button>
 			</div>
 		</div>

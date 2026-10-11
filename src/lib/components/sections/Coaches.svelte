@@ -14,28 +14,45 @@
 			<div class="lg:col-span-8">
 				<SectionTitle eyebrow="Команда" title="Тренери," accent="які тиснуть" id="treneri-title" />
 			</div>
-			<p class="text-lg text-ash lg:col-span-4">Кожен тренер — практик зі спортивним минулим. Персональний тренер у Києві, з яким не хочеться пропускати.</p>
+			<p class="text-lg text-ash lg:col-span-4">
+				Кожен тренер — практик зі спортивним минулим. Персональний тренер у Києві, з яким не
+				хочеться пропускати.
+			</p>
 		</div>
 
 		<ul class="mt-14 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
 			{#each coaches as c, i (c.id)}
 				<li class="coach" style:--i={i} use:inview={i * 90} data-rise>
-					<!-- svelte-ignore a11y_no_static_element_interactions — наведення лише підсилює; з клавіатури є кнопка -->
+					<!-- Наведення лише підсилює ефект; з клавіатури та на дотик працює кнопка -->
 					<article
 						class="group relative aspect-[3/4] overflow-hidden bg-steel"
 						class:open={open === c.id}
 						onmouseenter={() => (open = c.id)}
 						onmouseleave={() => (open = null)}
 					>
-						<enhanced:img src={img.coaches[c.id]} alt={c.alt} sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw" class="photo h-full w-full object-cover" />
+						<enhanced:img
+							loading="lazy"
+							src={img.coaches[c.id]}
+							alt={c.alt}
+							sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
+							class="photo h-full w-full object-cover"
+						/>
 						<div class="grain pointer-events-none absolute inset-0 overflow-hidden"></div>
-						<div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-void/20 to-transparent"></div>
+						<div
+							class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-void/20 to-transparent"
+						></div>
 
 						<!-- діагональна заливка з регаліями -->
-						<div class="wipe absolute inset-0 bg-lime p-6 text-void" id="coach-{c.id}" aria-hidden={open !== c.id}>
+						<div
+							class="wipe absolute inset-0 bg-lime p-6 text-void"
+							id="coach-{c.id}"
+							aria-hidden={open !== c.id}
+						>
 							<p class="tag">Регалії</p>
 							<ul class="mt-4 grid gap-3">
-								{#each c.achievements as a (a)}<li class="flex gap-2 font-semibold"><Icon name="bolt" size={18} class="mt-1 shrink-0" />{a}</li>{/each}
+								{#each c.achievements as a (a)}<li class="flex gap-2 font-semibold">
+										<Icon name="bolt" size={18} class="mt-1 shrink-0" />{a}
+									</li>{/each}
 							</ul>
 						</div>
 
@@ -79,12 +96,18 @@
 	.open .photo {
 		transform: scale(1.06) rotate(-1deg);
 	}
+	/* закрита заливка ще й невидима: не перекриває підпис для скрінрідерів і перевірки контрасту */
 	.wipe {
+		visibility: hidden;
 		clip-path: polygon(0 0, 0 0, -30% 100%, -30% 100%);
-		transition: clip-path 0.45s var(--ease-punch);
+		transition:
+			clip-path 0.45s var(--ease-punch),
+			visibility 0s 0.45s;
 	}
 	.open .wipe {
+		visibility: visible;
 		clip-path: polygon(0 0, 130% 0, 100% 100%, -30% 100%);
+		transition: clip-path 0.45s var(--ease-punch);
 	}
 	.open .caption {
 		color: var(--color-void);

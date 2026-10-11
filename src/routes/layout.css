@@ -3,7 +3,8 @@
 /* Метрично наближені запасні шрифти (поки вантажаться веб-шрифти — без стрибків вёрстки) */
 @font-face {
 	font-family: 'Fira XCond Fallback';
-	src: local('Arial Narrow Bold'), local('ArialNarrow-Bold'), local('Arial Narrow'), local('Impact');
+	src:
+		local('Arial Narrow Bold'), local('ArialNarrow-Bold'), local('Arial Narrow'), local('Impact');
 	font-weight: 900;
 	size-adjust: 100%;
 }

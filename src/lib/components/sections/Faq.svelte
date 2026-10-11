@@ -11,12 +11,23 @@
 	<div class="wrap grid gap-12 lg:grid-cols-12">
 		<div class="lg:col-span-4">
 			<div class="lg:sticky lg:top-28">
-				<SectionTitle eyebrow="FAQ" title="Чесно" accent="про все" id="faq-title" size="clamp(3.6rem, 9vw, 8rem)" />
+				<SectionTitle
+					eyebrow="FAQ"
+					title="Чесно"
+					accent="про все"
+					id="faq-title"
+					size="clamp(3.6rem, 9vw, 8rem)"
+				/>
 			</div>
 		</div>
 		<ol class="lg:col-span-8">
 			{#each faq as item, i (item.q)}
-				<li class="item border-b-2 border-steel" class:open={open === i} use:inview={i * 40} data-rise>
+				<li
+					class="item border-b-2 border-steel"
+					class:open={open === i}
+					use:inview={i * 40}
+					data-rise
+				>
 					<h3>
 						<button
 							type="button"
@@ -26,9 +37,16 @@
 							aria-controls="faq-a-{i}"
 							onclick={() => (open = open === i ? null : i)}
 						>
-							<span class="mega w-12 shrink-0 text-4xl leading-none text-lime" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-							<span class="mega flex-1 text-[1.65rem] leading-[1.05] md:text-[2.1rem]">{item.q}</span>
-							<span class="icon grid h-10 w-10 shrink-0 place-items-center bg-steel" aria-hidden="true"><Icon name="plus" /></span>
+							<span class="mega w-12 shrink-0 text-4xl leading-none text-lime" aria-hidden="true"
+								>{String(i + 1).padStart(2, '0')}</span
+							>
+							<span class="mega flex-1 text-[1.65rem] leading-[1.05] md:text-[2.1rem]"
+								>{item.q}</span
+							>
+							<span
+								class="icon grid h-10 w-10 shrink-0 place-items-center bg-steel"
+								aria-hidden="true"><Icon name="plus" /></span
+							>
 						</button>
 					</h3>
 					<div class="answer" id="faq-a-{i}" role="region" aria-labelledby="faq-q-{i}">

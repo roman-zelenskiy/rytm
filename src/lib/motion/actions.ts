@@ -57,7 +57,9 @@ export function kinetic(node: HTMLElement, strength = 1) {
 		const s = Math.abs(current);
 		// слухач уже викликається в rAF — пишемо transform одразу
 		node.style.transform =
-			s < 0.002 ? '' : `skewX(${(-current * 9).toFixed(2)}deg) scaleX(${(1 + s * 0.12).toFixed(3)}) scaleY(${(1 - s * 0.08).toFixed(3)})`;
+			s < 0.002
+				? ''
+				: `skewX(${(-current * 9).toFixed(2)}deg) scaleX(${(1 + s * 0.12).toFixed(3)}) scaleY(${(1 - s * 0.08).toFixed(3)})`;
 	});
 	return {
 		destroy() {

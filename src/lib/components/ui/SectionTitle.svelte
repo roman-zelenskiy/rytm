@@ -12,7 +12,14 @@
 		id,
 		size = 'clamp(3.6rem, 13vw, 13.5rem)',
 		level = 'h2'
-	}: { eyebrow: string; title: string; accent?: string; id?: string; size?: string; level?: 'h2' | 'h3' } = $props();
+	}: {
+		eyebrow: string;
+		title: string;
+		accent?: string;
+		id?: string;
+		size?: string;
+		level?: 'h2' | 'h3';
+	} = $props();
 </script>
 
 <p class="tag text-lime" use:inview data-rise>

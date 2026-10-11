@@ -13,7 +13,7 @@
 	import Faq from '#lib/components/sections/Faq.svelte';
 	import BookingSection from '#lib/components/sections/BookingSection.svelte';
 
-	const title = 'Фітнес-студія Київ «Ритм» — бокс, функціональні, перше безкоштовно';
+	const title = 'Фітнес-студія Київ «Ритм» — бокс, функціонал, стретчинг';
 	const description =
 		'Фітнес-студія «Ритм» на Подолі: функціональні тренування, бокс для початківців, стретчинг і персональний тренер у Києві. Перше тренування безкоштовно, результат за 8 тижнів.';
 </script>

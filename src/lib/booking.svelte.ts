@@ -1,4 +1,10 @@
-export type Lead = { name: string; phone: string; direction: string; day: string; createdAt: string };
+export type Lead = {
+	name: string;
+	phone: string;
+	direction: string;
+	day: string;
+	createdAt: string;
+};
 
 const KEY = 'rytm:leads';
 

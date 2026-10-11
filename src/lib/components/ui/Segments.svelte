@@ -16,7 +16,11 @@
 
 	let startBeat = $state<number | null>(null);
 	let lit = $derived(
-		startBeat === null ? 0 : startBeat === -Infinity ? value : Math.min(value, beat.count - startBeat)
+		startBeat === null
+			? 0
+			: startBeat === -Infinity
+				? value
+				: Math.min(value, beat.count - startBeat)
 	);
 
 	function arm(node: HTMLElement) {

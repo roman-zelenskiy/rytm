@@ -4,7 +4,12 @@ export const prerender = true;
 
 const pages = [
 	{ path: '/', changefreq: 'weekly', priority: '1.0', lastmod: '2026-10-10' },
-	{ path: '/polityka-konfidentsiinosti', changefreq: 'yearly', priority: '0.2', lastmod: '2026-09-01' }
+	{
+		path: '/polityka-konfidentsiinosti',
+		changefreq: 'yearly',
+		priority: '0.2',
+		lastmod: '2026-09-01'
+	}
 ];
 
 export function GET() {

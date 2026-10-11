@@ -27,7 +27,14 @@
 		const start = async () => {
 			const { mountImpact } = await import('#lib/webgl/impact.ts');
 			if (cancelled) return;
-			fx = await mountImpact(canvas, img.heroTexture, { focus: [0.42, 0.55], hitPos: glove, onReady: () => (ready = true) });
+			// текстура — той самий кадр, що вже завантажив <picture> (без зайвого запиту)
+			const src = section.querySelector('img')?.currentSrc;
+			if (!src) return;
+			fx = await mountImpact(canvas, src, {
+				focus: [0.42, 0.55],
+				hitPos: glove,
+				onReady: () => (ready = true)
+			});
 			if (!fx || cancelled) return;
 			const unVel = onVelocity((v) => fx?.setVelocity(v / 30));
 			let lastX = 0;
@@ -46,7 +53,11 @@
 				fx?.dispose();
 			};
 		};
-		const idle = () => (window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 600)))(() => void start(), { timeout: 2500 });
+		const idle = () =>
+			(window.requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 600)))(
+				() => void start(),
+				{ timeout: 2500 }
+			);
 		if (document.readyState === 'complete') idle();
 		else addEventListener('load', idle, { once: true });
 		return () => {
@@ -67,7 +78,12 @@
 	}
 </script>
 
-<section bind:this={section} id="top" aria-labelledby="hero-title" class="hero relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden pt-24 pb-10 md:pb-14">
+<section
+	bind:this={section}
+	id="top"
+	aria-labelledby="hero-title"
+	class="hero relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden pt-24 pb-10 md:pb-14"
+>
 	<div class="absolute inset-0 -z-10">
 		<enhanced:img
 			src={img.hero}
@@ -77,16 +93,29 @@
 			loading="eager"
 			class="h-full w-full object-cover object-[42%_45%]"
 		/>
-		<!-- svelte-ignore a11y_click_events_have_key_events, a11y_no_static_element_interactions -->
-		<canvas bind:this={canvas} class="absolute inset-0 h-full w-full transition-opacity duration-500" class:opacity-0={!ready} aria-hidden="true" onclick={punch}></canvas>
-		<div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-void/55 to-void/10"></div>
+		<canvas
+			bind:this={canvas}
+			class="absolute inset-0 h-full w-full transition-opacity duration-500"
+			class:opacity-0={!ready}
+			aria-hidden="true"
+			onclick={punch}
+		></canvas>
+		<div
+			class="pointer-events-none absolute inset-0 bg-gradient-to-t from-void via-void/55 to-void/10"
+		></div>
 		<div class="grain pointer-events-none absolute inset-0 overflow-hidden"></div>
-		<div class="slashline pointer-events-none absolute top-[18%] -right-[10%] h-3 w-[60%] bg-lime" aria-hidden="true"></div>
+		<div
+			class="slashline pointer-events-none absolute top-[18%] -right-[10%] h-3 w-[60%] bg-lime"
+			aria-hidden="true"
+		></div>
 	</div>
 
 	<div class="wrap">
 		<h1 id="hero-title">
-			<span class="tag text-lime"><span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Фітнес-студія «Ритм» · Київ, Поділ</span>
+			<span class="tag text-lime"
+				><span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Фітнес-студія
+				«Ритм» · Київ, Поділ</span
+			>
 			<span class="mega mt-4 block text-[clamp(4.6rem,21vw,21rem)]" use:kinetic>
 				<span class="line block">Тренуйся</span>
 				<span class="line line-2 block text-lime">в ритмі</span>
@@ -96,13 +125,17 @@
 		<div class="mt-6 grid gap-8 lg:mt-8 lg:grid-cols-12 lg:items-end">
 			<div class="lg:col-span-6">
 				<p class="mega text-[clamp(1.8rem,3.4vw,3.2rem)] leading-[0.95]">
-					Перше тренування — <span class="text-lime">безкоштовно</span>.<br />Результат за 8 тижнів або повернемо гроші.
+					Перше тренування — <span class="text-lime">безкоштовно</span>.<br />Результат за 8 тижнів
+					або повернемо гроші.
 				</p>
 				<p class="mt-4 max-w-xl text-ash">
-					Функціональні тренування, бокс для початківців, стретчинг і персональний тренер у Києві. Міні-групи до 10 осіб — тренер бачить кожного.
+					Функціональні тренування, бокс для початківців, стретчинг і персональний тренер у Києві.
+					Міні-групи до 10 осіб — тренер бачить кожного.
 				</p>
 				<div class="mt-7 flex flex-wrap gap-3">
-					<Button class="beat-btn" onclick={() => booking.show()}>Записатися на пробне <Icon name="arrow" /></Button>
+					<Button class="beat-btn" onclick={() => booking.show()}
+						>Записатися на пробне <Icon name="arrow" /></Button
+					>
 					<Button variant="ghost" href="#kviz">Підібрати програму</Button>
 				</div>
 			</div>
@@ -110,7 +143,9 @@
 				{#each heroStats as s, i (s.label)}
 					<div class="stat border-l-4 border-lime pl-3" style:--i={i}>
 						<dt class="sr-only">{s.label}</dt>
-						<dd class="mega text-5xl leading-none md:text-6xl">{s.value}<span class="ml-1 text-xl text-lime">{s.unit}</span></dd>
+						<dd class="mega text-5xl leading-none md:text-6xl">
+							{s.value}<span class="ml-1 text-xl text-lime">{s.unit}</span>
+						</dd>
 						<dd aria-hidden="true" class="mt-1 text-sm text-ash">{s.label}</dd>
 					</div>
 				{/each}

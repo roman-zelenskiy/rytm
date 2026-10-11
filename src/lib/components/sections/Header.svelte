@@ -16,7 +16,6 @@
 	let menu = $state(false);
 
 	const home = $derived(page.url.pathname === resolve('/'));
-	const link = (hash: string) => (home ? hash : resolve('/') + hash);
 
 	onMount(() => {
 		let last = scrollY;
@@ -44,20 +43,33 @@
 
 		<nav aria-label="Основна навігація" class="hidden lg:block">
 			<ul class="flex items-center">
-				{#each nav as item (item.href)}
-					<li><a href={link(item.href)} class="navlink">{item.label}</a></li>
+				{#each nav as item (item.id)}
+					<li>
+						<a href={home ? `#${item.id}` : resolve(`/#${item.id}`)} class="navlink">{item.label}</a
+						>
+					</li>
 				{/each}
 			</ul>
 		</nav>
 
 		<div class="flex items-center gap-3">
-			<span class="hidden items-center gap-2 font-display text-sm font-black uppercase tracking-wider text-ash xl:inline-flex" aria-hidden="true">
+			<span
+				class="hidden items-center gap-2 font-display text-sm font-black tracking-wider text-ash uppercase xl:inline-flex"
+				aria-hidden="true"
+			>
 				<Equalizer />{beat.bpm} bpm
 			</span>
-			<a href={studio.phoneHref} class="hidden items-center gap-2 font-display text-lg font-black tracking-wide xl:inline-flex">
+			<a
+				href={studio.phoneHref}
+				rel="external"
+				class="hidden items-center gap-2 font-display text-lg font-black tracking-wide xl:inline-flex"
+			>
 				<Icon name="phone" size={18} class="text-lime" />{studio.phone}
 			</a>
-			<Button class="hidden !min-h-11 !px-5 !text-base sm:inline-flex" onclick={() => booking.show()}>Пробне безкоштовно</Button>
+			<Button
+				class="hidden !min-h-11 !px-5 !text-base sm:inline-flex"
+				onclick={() => booking.show()}>Пробне безкоштовно</Button
+			>
 			<button
 				type="button"
 				class="grid h-11 w-11 place-items-center bg-steel lg:hidden"
@@ -72,12 +84,20 @@
 	</div>
 
 	{#if menu}
-		<div id="mobile-nav" class="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-void lg:hidden" transition:fly={{ y: -16, duration: 220 }}>
+		<div
+			id="mobile-nav"
+			class="fixed inset-x-0 top-16 bottom-0 overflow-y-auto bg-void lg:hidden"
+			transition:fly={{ y: -16, duration: 220 }}
+		>
 			<nav aria-label="Мобільна навігація" class="wrap py-6">
 				<ul>
-					{#each nav as item, i (item.href)}
+					{#each nav as item, i (item.id)}
 						<li in:fly={{ x: -40, delay: 40 * i, duration: 260 }}>
-							<a href={link(item.href)} onclick={() => (menu = false)} class="mega block border-b border-steel py-2 text-[17vw] leading-[0.95] hover:text-lime sm:text-7xl">
+							<a
+								href={home ? `#${item.id}` : resolve(`/#${item.id}`)}
+								onclick={() => (menu = false)}
+								class="mega block border-b border-steel py-2 text-[17vw] leading-[0.95] hover:text-lime sm:text-7xl"
+							>
 								{item.label}
 							</a>
 						</li>
@@ -91,7 +111,9 @@
 							booking.show();
 						}}>Записатися на пробне</Button
 					>
-					<Button variant="ghost" href={studio.phoneHref} class="w-full"><Icon name="phone" />{studio.phone}</Button>
+					<Button variant="ghost" href={studio.phoneHref} class="w-full"
+						><Icon name="phone" />{studio.phone}</Button
+					>
 				</div>
 			</nav>
 		</div>

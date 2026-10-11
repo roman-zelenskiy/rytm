@@ -4,7 +4,8 @@
 	import type { HTMLAnchorAttributes, HTMLButtonAttributes } from 'svelte/elements';
 
 	type Common = { variant?: 'lime' | 'ghost'; class?: string; children: Snippet };
-	type Props = Common & ((HTMLButtonAttributes & { href?: undefined }) | (HTMLAnchorAttributes & { href: string }));
+	type Props = Common &
+		((HTMLButtonAttributes & { href?: undefined }) | (HTMLAnchorAttributes & { href: string }));
 
 	let { variant = 'lime', class: cls = '', children, ...rest }: Props = $props();
 

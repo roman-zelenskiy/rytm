@@ -37,11 +37,26 @@ export function homeSchema(description: string) {
 				geo: { '@type': 'GeoCoordinates', latitude: studio.geo.lat, longitude: studio.geo.lng },
 				hasMap: studio.mapsUrl,
 				openingHoursSpecification: [
-					{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'], opens: '07:00', closes: '22:00' },
-					{ '@type': 'OpeningHoursSpecification', dayOfWeek: ['Saturday', 'Sunday'], opens: '09:00', closes: '20:00' }
+					{
+						'@type': 'OpeningHoursSpecification',
+						dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+						opens: '07:00',
+						closes: '22:00'
+					},
+					{
+						'@type': 'OpeningHoursSpecification',
+						dayOfWeek: ['Saturday', 'Sunday'],
+						opens: '09:00',
+						closes: '20:00'
+					}
 				],
 				sameAs: [studio.instagram, studio.telegram],
-				aggregateRating: { '@type': 'AggregateRating', ratingValue: studio.rating, reviewCount: studio.reviewsCount, bestRating: 5 },
+				aggregateRating: {
+					'@type': 'AggregateRating',
+					ratingValue: studio.rating,
+					reviewCount: studio.reviewsCount,
+					bestRating: 5
+				},
 				review: stories.map((s) => ({
 					'@type': 'Review',
 					author: { '@type': 'Person', name: s.name },
@@ -75,7 +90,11 @@ export function homeSchema(description: string) {
 			{
 				'@type': 'FAQPage',
 				'@id': `${siteUrl}/#faq`,
-				mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } }))
+				mainEntity: faq.map((f) => ({
+					'@type': 'Question',
+					name: f.q,
+					acceptedAnswer: { '@type': 'Answer', text: f.a }
+				}))
 			}
 		]
 	};

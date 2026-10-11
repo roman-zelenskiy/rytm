@@ -1,54 +1,52 @@
-# sv
+# «Ритм» — лендинг фитнес-студии
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+SvelteKit 3 + Svelte 5 (runes), строгий TypeScript, SSR + prerender, Tailwind CSS 4, GSAP/ScrollTrigger, Lenis, WebGL (OGL), `@sveltejs/enhanced-img`. Контент на украинском. Результаты проверки — в [AUDIT.md](AUDIT.md).
 
-## Creating a project
+## Запуск
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```sh
-# create a new project
-npx sv create my-app
-```
-
-To recreate this project with the same configuration:
+Нужен Node.js 22+.
 
 ```sh
-# recreate this project
-npx sv@1.1.1 create --template minimal --types ts --add tailwindcss="plugins:none" enhanced-img sveltekit-adapter="adapter:node" eslint prettier --install npm rytm
+npm install
+npm run dev          # http://localhost:5173
 ```
 
-## Adding features
-
-Add features to your project with `sv add`:
+## Проверки
 
 ```sh
-npx sv add
+npm run check        # svelte-check (типы)
+npm run lint         # prettier + eslint
+npm run format       # автоформатирование
 ```
 
-For example, to add Tailwind CSS:
-
-```sh
-npx sv add tailwindcss
-```
-
-## Developing
-
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
+## Продакшен: Node-сервер (по умолчанию)
 
 ```sh
 npm run build
+node build           # http://localhost:3000, порт — через PORT=…
 ```
 
-You can preview the production build with `npm run preview`.
+Страницы пререндерятся на сборке, `adapter-node` отдаёт их и статику.
+
+## Статическая сборка (GitHub Pages и любой статический хостинг)
+
+```sh
+STATIC=1 npm run build                  # сайт в корне домена
+STATIC=1 BASE_PATH=/rytm npm run build  # сайт в подпапке /rytm
+```
+
+Результат — папка `build/` (`index.html`, `404.html`, `sitemap.xml`, `robots.txt`).
+
+GitHub Pages: workflow `.github/workflows/deploy-pages.yml` собирает и публикует сайт при пуше в `main`. Один раз: **Settings → Pages → Source: GitHub Actions**.
+
+## Где что менять
+
+| Что                                              | Где                                                     |
+| ------------------------------------------------ | ------------------------------------------------------- |
+| Тексты, цены, расписание, тренеры, FAQ, контакты | `src/lib/content.ts`                                    |
+| Домен (canonical, OG, sitemap)                   | `siteUrl` в `src/lib/content.ts`                        |
+| Фото                                             | `src/lib/assets/photos/`, импорты — `src/lib/images.ts` |
+| Цвета, шрифты, общие стили                       | `src/routes/layout.css`                                 |
+| SEO-мета и JSON-LD                               | `src/lib/seo/`                                          |
+
+Форма записи — демо: заявки сохраняются в `localStorage` браузера (`rytm:leads`) и никуда не отправляются.

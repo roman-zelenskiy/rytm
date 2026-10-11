@@ -30,7 +30,11 @@
 	});
 </script>
 
-<a href="#main" class="sr-only z-[100] bg-lime px-5 py-3 font-bold text-void focus:not-sr-only focus:fixed focus:top-3 focus:left-3">Перейти до вмісту</a>
+<a
+	href="#main"
+	class="sr-only z-[100] bg-lime px-5 py-3 font-bold text-void focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
+	>Перейти до вмісту</a
+>
 <Header />
 <main id="main" tabindex="-1" class="outline-none">
 	{@render children()}
