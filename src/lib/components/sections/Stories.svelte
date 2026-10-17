@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount, untrack } from 'svelte';
-	import { stories, studio } from '#lib/content.ts';
+	import { stories, studio, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { beat } from '#lib/motion/beat.svelte.ts';
 	import { reducedMotion } from '#lib/motion/env.ts';
@@ -63,23 +63,23 @@
 	<div class="wrap grid gap-12 lg:grid-cols-12 lg:items-center">
 		<div class="lg:col-span-6">
 			<SectionTitle
-				eyebrow="Відгуки"
-				title="Сторіз"
-				accent="наших"
+				eyebrow={t.stories.eyebrow}
+				title={t.stories.title}
+				accent={t.stories.accent}
 				id="vidguky-title"
 				size="clamp(3.6rem, 11vw, 10rem)"
 			/>
 			<div class="mt-8 flex items-center gap-5">
-				<p class="mega text-7xl">{studio.rating.toString().replace('.', ',')}</p>
+				<p class="mega text-7xl">{t.decimal(studio.rating)}</p>
 				<div>
-					<p class="flex text-lime" role="img" aria-label="Рейтинг {studio.rating} з 5">
+					<p class="flex text-lime" role="img" aria-label={t.stories.rating(studio.rating)}>
 						{#each [1, 2, 3, 4, 5] as s (s)}<Icon name="star" size={18} />{/each}
 					</p>
-					<p class="mt-1 text-sm text-ash">{studio.reviewsCount} відгуків у Google</p>
+					<p class="mt-1 text-sm text-ash">{t.stories.reviews(studio.reviewsCount)}</p>
 				</div>
 			</div>
 
-			<ul class="mt-10 flex flex-wrap gap-4" aria-label="Обрати історію">
+			<ul class="mt-10 flex flex-wrap gap-4" aria-label={t.stories.pick}>
 				{#each stories as s, i (s.id)}
 					<li>
 						<button
@@ -87,7 +87,7 @@
 							class="ring"
 							class:on={i === idx}
 							aria-current={i === idx}
-							aria-label="Історія: {s.name}"
+							aria-label={t.stories.story(s.name)}
 							onclick={() => pick(i)}
 						>
 							<enhanced:img
@@ -110,8 +110,8 @@
 				bind:this={frame}
 				class="frame relative mx-auto aspect-[9/16] max-h-[78svh] w-full max-w-[420px] overflow-hidden bg-steel"
 				role="region"
-				aria-roledescription="сторіз"
-				aria-label="Відгуки клієнтів"
+				aria-roledescription={t.stories.role}
+				aria-label={t.stories.region}
 				tabindex="0"
 				onkeydown={onkey}
 				onmouseenter={() => (hover = true)}
@@ -134,7 +134,7 @@
 						<blockquote
 							class="mega absolute inset-x-0 bottom-0 p-5 text-[clamp(1.35rem,6.4vw,2rem)] leading-[1.04] sm:p-6"
 						>
-							«{s.text}»
+							{t.q(s.text)}
 						</blockquote>
 						<figcaption class="absolute inset-x-0 top-0 flex items-center gap-3 px-4 pt-8">
 							<span class="tag bg-lime px-2 py-1 text-void">{s.dir}</span>
@@ -160,30 +160,22 @@
 					{/each}
 				</div>
 
-				<button
-					type="button"
-					class="tap left-0"
-					aria-label="Попередня історія"
-					onclick={() => go(-1)}
+				<button type="button" class="tap left-0" aria-label={t.stories.prev} onclick={() => go(-1)}
 				></button>
-				<button
-					type="button"
-					class="tap right-0"
-					aria-label="Наступна історія"
-					onclick={() => go(1)}
+				<button type="button" class="tap right-0" aria-label={t.stories.next} onclick={() => go(1)}
 				></button>
 				<button
 					type="button"
 					class="absolute right-3 bottom-3 z-20 grid h-10 w-10 place-items-center bg-void/70 text-lime"
 					aria-pressed={paused}
-					aria-label={paused ? 'Відтворити' : 'Пауза'}
+					aria-label={paused ? t.stories.play : t.stories.pause}
 					onclick={() => (paused = !paused)}
 				>
 					<Icon name={paused ? 'play' : 'pause'} size={18} />
 				</button>
 			</div>
 			<p class="mt-3 text-center text-sm text-ash">
-				{idx + 1} / {stories.length} · стрілки ← → або тап по краях
+				{idx + 1} / {stories.length} · {t.stories.hint}
 			</p>
 		</div>
 	</div>

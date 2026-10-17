@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { heroStats } from '#lib/content.ts';
+	import { heroStats, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { beat } from '#lib/motion/beat.svelte.ts';
@@ -87,7 +87,7 @@
 	<div class="absolute inset-0 -z-10">
 		<enhanced:img
 			src={img.hero}
-			alt="Боксер наносить удар у рукавичці — чорно-біле фото в русі"
+			alt={t.hero.alt}
 			sizes="100vw"
 			fetchpriority="high"
 			loading="eager"
@@ -113,37 +113,35 @@
 	<div class="wrap">
 		<h1 id="hero-title">
 			<span class="tag text-lime"
-				><span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Фітнес-студія
-				«Ритм» · Київ, Поділ</span
+				><span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>{t.hero
+					.eyebrow}</span
 			>
 			<span class="mega mt-4 block text-[clamp(4.6rem,21vw,21rem)]" use:kinetic>
-				<span class="line block">Тренуйся</span>
-				<span class="line line-2 block text-lime">в ритмі</span>
+				<span class="line block">{t.hero.line1}</span>
+				<span class="line line-2 block text-lime">{t.hero.line2}</span>
 			</span>
 		</h1>
 
 		<div class="mt-6 grid gap-8 lg:mt-8 lg:grid-cols-12 lg:items-end">
 			<div class="lg:col-span-6">
 				<p class="mega text-[clamp(1.8rem,3.4vw,3.2rem)] leading-[0.95]">
-					Перше тренування — <span class="text-lime">безкоштовно</span>.<br />Результат за 8 тижнів
-					або повернемо гроші.
+					{t.hero.offerA} <span class="text-lime">{t.hero.offerFree}</span>.<br />{t.hero.offerB}
 				</p>
 				<p class="mt-4 max-w-xl text-ash">
-					Функціональні тренування, бокс для початківців, стретчинг і персональний тренер у Києві.
-					Міні-групи до 10 осіб — тренер бачить кожного.
+					{t.hero.lead}
 				</p>
 				<div class="mt-7 flex flex-wrap gap-3">
 					<Button class="beat-btn" onclick={() => booking.show()}
-						>Записатися на пробне <Icon name="arrow" /></Button
+						>{t.bookTrial} <Icon name="arrow" /></Button
 					>
-					<Button variant="ghost" href="#kviz">Підібрати програму</Button>
+					<Button variant="ghost" href="#kviz">{t.hero.quiz}</Button>
 				</div>
 			</div>
 			<dl class="grid grid-cols-2 gap-x-6 gap-y-5 sm:grid-cols-4 lg:col-span-6">
 				{#each heroStats as s, i (s.label)}
 					<div class="stat border-l-4 border-lime pl-3" style:--i={i}>
 						<dt class="sr-only">{s.label}</dt>
-						<dd class="mega text-5xl leading-none md:text-6xl">
+						<dd class="mega text-5xl leading-none whitespace-nowrap md:text-6xl">
 							{s.value}<span class="ml-1 text-xl text-lime">{s.unit}</span>
 						</dd>
 						<dd aria-hidden="true" class="mt-1 text-sm text-ash">{s.label}</dd>

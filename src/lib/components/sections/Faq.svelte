@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { faq } from '#lib/content.ts';
+	import { faq, t } from '#lib/content.ts';
 	import { inview } from '#lib/motion/actions.ts';
 	import SectionTitle from '#lib/components/ui/SectionTitle.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -13,8 +13,8 @@
 			<div class="lg:sticky lg:top-28">
 				<SectionTitle
 					eyebrow="FAQ"
-					title="Чесно"
-					accent="про все"
+					title={t.faq.title}
+					accent={t.faq.accent}
 					id="faq-title"
 					size="clamp(3.6rem, 9vw, 8rem)"
 				/>

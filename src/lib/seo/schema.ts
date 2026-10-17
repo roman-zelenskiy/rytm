@@ -1,17 +1,19 @@
-import { faq, plans, siteUrl, stories, studio } from '#lib/content.ts';
+import { faq, plans, siteUrl, stories, studio, t } from '#lib/content.ts';
+import { lang } from '#lib/i18n.ts';
 
 /** JSON-LD для головної: студія (ExerciseGym + SportsActivityLocation), тарифи як Offer, відгуки, FAQ */
 export function homeSchema(description: string) {
 	const id = `${siteUrl}/#studio`;
+	const home = `${siteUrl}/${lang}/`;
 	return {
 		'@context': 'https://schema.org',
 		'@graph': [
 			{
 				'@type': 'WebSite',
 				'@id': `${siteUrl}/#website`,
-				url: `${siteUrl}/`,
+				url: home,
 				name: studio.legalName,
-				inLanguage: 'uk-UA',
+				inLanguage: t.seo.inLanguage,
 				publisher: { '@id': id }
 			},
 			{
@@ -19,18 +21,18 @@ export function homeSchema(description: string) {
 				'@id': id,
 				name: studio.legalName,
 				description,
-				url: `${siteUrl}/`,
+				url: home,
 				image: `${siteUrl}/og-image.jpg`,
 				logo: `${siteUrl}/favicon.svg`,
 				telephone: studio.phone,
 				email: studio.email,
-				priceRange: '450–7200 грн',
+				priceRange: t.seo.priceRange,
 				currenciesAccepted: 'UAH',
 				address: {
 					'@type': 'PostalAddress',
 					streetAddress: studio.street,
 					addressLocality: studio.city,
-					addressRegion: 'Київ',
+					addressRegion: t.seo.region,
 					postalCode: studio.postalCode,
 					addressCountry: 'UA'
 				},
@@ -66,10 +68,10 @@ export function homeSchema(description: string) {
 				makesOffer: [
 					{
 						'@type': 'Offer',
-						name: 'Пробне тренування',
+						name: t.seo.trialName,
 						price: 0,
 						priceCurrency: 'UAH',
-						description: 'Перше групове тренування — безкоштовно'
+						description: t.seo.trialDesc
 					},
 					...plans.map((p) => ({
 						'@type': 'Offer',
@@ -81,7 +83,7 @@ export function homeSchema(description: string) {
 							'@type': 'UnitPriceSpecification',
 							price: p.price.month,
 							priceCurrency: 'UAH',
-							...(p.perMonth && { unitText: 'місяць', billingDuration: 'P1M' })
+							...(p.perMonth && { unitText: t.seo.month, billingDuration: 'P1M' })
 						},
 						availability: 'https://schema.org/InStock'
 					}))

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { guarantee } from '#lib/content.ts';
+	import { guarantee, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { inview, kinetic } from '#lib/motion/actions.ts';
 	import Segments from '#lib/components/ui/Segments.svelte';
@@ -30,18 +30,18 @@
 
 	<div class="wrap">
 		<p class="tag text-lime" use:inview data-rise>
-			<span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Гарантія результату
+			<span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>{t.guar.eyebrow}
 		</p>
 		<h2 id="harantiia-title" class="mega mt-4 text-[clamp(4.2rem,15vw,15rem)]">
 			<span class="block origin-left" use:kinetic>
-				<span class="block" use:inview data-slash>8 тижнів</span>
-				<span class="mega-outline block" use:inview={90} data-slash>або гроші</span>
-				<span class="block text-lime" use:inview={180} data-slash>назад</span>
+				<span class="block" use:inview data-slash>{t.guar.l1}</span>
+				<span class="mega-outline block" use:inview={90} data-slash>{t.guar.l2}</span>
+				<span class="block text-lime" use:inview={180} data-slash>{t.guar.l3}</span>
 			</span>
 		</h2>
 
 		<div class="mt-10 max-w-xl">
-			<Segments total={8} value={8} label="Програма триває 8 тижнів" />
+			<Segments total={8} value={8} label={t.guar.segments} />
 			<div
 				class="mt-2 grid grid-cols-8 text-center font-display text-sm font-black text-ash"
 				aria-hidden="true"
@@ -61,10 +61,9 @@
 			</ol>
 			<div class="self-end lg:col-span-5">
 				<p class="text-ash">
-					Гарантія діє для тарифів «Безлім» і «Персонально». Ціль і заміри фіксуємо письмово в
-					перший тиждень — разом із тренером, реалістично й без «мінус 20 кг за місяць».
+					{t.guar.note}
 				</p>
-				<Button class="mt-6" onclick={() => booking.show()}>Прийняти виклик</Button>
+				<Button class="mt-6" onclick={() => booking.show()}>{t.guar.cta}</Button>
 			</div>
 		</div>
 	</div>

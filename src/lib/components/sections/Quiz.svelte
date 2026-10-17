@@ -7,6 +7,8 @@
 		plans,
 		days,
 		directionLabel,
+		bookingDirections,
+		t,
 		type DirectionId
 	} from '#lib/content.ts';
 	import { booking } from '#lib/booking.svelte.ts';
@@ -30,17 +32,12 @@
 		stress: 'boxing',
 		flex: 'stretching'
 	};
-	const forecast: Record<string, string> = {
-		lose: '−4…−7 кг і мінус розмір одягу за 8 тижнів',
-		strong: '+25–40% у силових вправах за 8 тижнів',
-		stress: 'перша серія на лапах через 4 тижні, спаринг — за бажанням',
-		flex: 'спина без затисків і шпагат ближче на 15–20 см за 8 тижнів'
-	};
-	const bookingName: Record<DirectionId, string> = {
-		functional: 'Функціональний тренінг',
-		boxing: 'Бокс',
-		stretching: 'Стретчинг',
-		personal: 'Персональне тренування'
+	const forecast: Record<string, string> = t.quiz.forecast;
+	const bookingIndex: Record<DirectionId, number> = {
+		functional: 0,
+		boxing: 1,
+		stretching: 2,
+		personal: 3
 	};
 
 	const result = $derived.by(() => {
@@ -52,11 +49,7 @@
 		const slots = schedule.filter((s) => s.dir === groupDir).slice(0, 3);
 		const coach = coaches.find((c) => c.id === slots[0]?.coach) ?? coaches[0];
 		const extra =
-			answers.level === 'zero'
-				? 'Почніть із 1–2 персональних, щоб поставити техніку, — перше теж безкоштовне.'
-				: answers.freq === '4'
-					? 'Додайте 1 персональне на тиждень — це найшвидший шлях до цілі.'
-					: '';
+			answers.level === 'zero' ? t.quiz.extraZero : answers.freq === '4' ? t.quiz.extraMax : '';
 		return { d, plan, slots, coach, extra, forecast: forecast[answers.goal] };
 	});
 
@@ -77,30 +70,29 @@
 	<div class="wrap grid gap-12 lg:grid-cols-12">
 		<div class="lg:col-span-5">
 			<SectionTitle
-				eyebrow="30 секунд"
-				title="Підбери"
-				accent="програму"
+				eyebrow={t.quiz.eyebrow}
+				title={t.quiz.title}
+				accent={t.quiz.accent}
 				id="kviz-title"
 				size="clamp(3.4rem, 7.4vw, 7.6rem)"
 			/>
 			<p class="mt-6 max-w-md text-lg text-ash">
-				Три питання — і ви знаєте, з якого напряму почати, скільки разів тренуватись і який тариф
-				вигідніший саме вам.
+				{t.quiz.lead}
 			</p>
 		</div>
 
 		<div class="lg:col-span-7">
 			<div class="card relative bg-coal p-6 md:p-10">
 				<!-- прогрес: сегменти кроків -->
-				<ol class="grid grid-cols-4 gap-2" aria-label="Прогрес">
-					{#each [...quiz.steps.map((s) => s.title), 'Результат'] as t, i (t)}
+				<ol class="grid grid-cols-4 gap-2" aria-label={t.quiz.progress}>
+					{#each [...quiz.steps.map((s) => s.title), t.quiz.result] as title, i (title)}
 						<li
 							class="h-2 -skew-x-[20deg] transition-colors duration-300 {i <= step
 								? 'bg-lime'
 								: 'bg-iron'}"
 							aria-current={i === step ? 'step' : undefined}
 						>
-							<span class="sr-only">{i + 1}. {t}</span>
+							<span class="sr-only">{i + 1}. {title}</span>
 						</li>
 					{/each}
 				</ol>
@@ -115,7 +107,7 @@
 							{#if !done}
 								<fieldset>
 									<legend class="w-full">
-										<span class="tag text-ash">Крок {step + 1} з {quiz.steps.length}</span>
+										<span class="tag text-ash">{t.quiz.stepOf(step + 1, quiz.steps.length)}</span>
 										<span
 											bind:this={stepHeading}
 											tabindex="-1"
@@ -146,16 +138,17 @@
 										disabled={step === 0}
 										onclick={() => go(step - 1)}
 									>
-										<Icon name="left" size={18} /> Назад
+										<Icon name="left" size={18} />
+										{t.quiz.back}
 									</button>
 									<Button disabled={!answers[current.key]} onclick={() => go(step + 1)}>
-										{step === quiz.steps.length - 1 ? 'Мій результат' : 'Далі'}
+										{step === quiz.steps.length - 1 ? t.quiz.myResult : t.quiz.next}
 										<Icon name="arrow" />
 									</Button>
 								</div>
 							{:else if result}
 								<div aria-live="polite">
-									<span class="tag text-lime">Ваша програма</span>
+									<span class="tag text-lime">{t.quiz.yourProgram}</span>
 									<h3
 										bind:this={stepHeading}
 										tabindex="-1"
@@ -164,24 +157,24 @@
 										{directionLabel(result.d)}
 									</h3>
 									<p class="mt-3 text-lg">
-										<strong class="text-lime">Прогноз:</strong>
+										<strong class="text-lime">{t.quiz.forecastLabel}</strong>
 										{result.forecast}
 									</p>
 									<dl class="mt-6 grid gap-4 sm:grid-cols-3">
 										<div class="border-l-4 border-lime pl-3">
-											<dt class="tag text-ash">Тариф</dt>
+											<dt class="tag text-ash">{t.quiz.plan}</dt>
 											<dd class="mega mt-1 text-3xl">{result.plan.name}</dd>
 											<dd class="text-sm text-ash">
-												від {result.plan.price.year.toLocaleString('uk-UA')} грн/міс
+												{t.quiz.perMonth(result.plan.price.year)}
 											</dd>
 										</div>
 										<div class="border-l-4 border-lime pl-3">
-											<dt class="tag text-ash">Тренер</dt>
+											<dt class="tag text-ash">{t.quiz.coach}</dt>
 											<dd class="mega mt-1 text-3xl">{result.coach.name}</dd>
 											<dd class="text-sm text-ash">{result.coach.role}</dd>
 										</div>
 										<div class="border-l-4 border-lime pl-3">
-											<dt class="tag text-ash">Найближчі</dt>
+											<dt class="tag text-ash">{t.quiz.nearest}</dt>
 											{#each result.slots as s (s.day + s.time)}<dd
 													class="font-display text-lg font-black uppercase"
 												>
@@ -194,11 +187,11 @@
 											{result.extra}
 										</p>{/if}
 									<div class="mt-8 flex flex-wrap items-center gap-4">
-										<Button onclick={() => booking.show(bookingName[result!.d])}
-											>Записатися на пробне <Icon name="arrow" /></Button
+										<Button onclick={() => booking.show(bookingDirections[bookingIndex[result!.d]])}
+											>{t.bookTrial} <Icon name="arrow" /></Button
 										>
 										<button type="button" class="tag text-ash hover:text-chalk" onclick={restart}
-											>Пройти ще раз</button
+											>{t.quiz.again}</button
 										>
 									</div>
 								</div>

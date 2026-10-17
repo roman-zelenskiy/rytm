@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { coaches } from '#lib/content.ts';
+	import { coaches, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { inview } from '#lib/motion/actions.ts';
 	import SectionTitle from '#lib/components/ui/SectionTitle.svelte';
@@ -12,11 +12,15 @@
 	<div class="wrap">
 		<div class="grid gap-8 lg:grid-cols-12 lg:items-end">
 			<div class="lg:col-span-8">
-				<SectionTitle eyebrow="Команда" title="Тренери," accent="які тиснуть" id="treneri-title" />
+				<SectionTitle
+					eyebrow={t.coaches.eyebrow}
+					title={t.coaches.title}
+					accent={t.coaches.accent}
+					id="treneri-title"
+				/>
 			</div>
 			<p class="text-lg text-ash lg:col-span-4">
-				Кожен тренер — практик зі спортивним минулим. Персональний тренер у Києві, з яким не
-				хочеться пропускати.
+				{t.coaches.lead}
 			</p>
 		</div>
 
@@ -48,7 +52,7 @@
 							id="coach-{c.id}"
 							aria-hidden={open !== c.id}
 						>
-							<p class="tag">Регалії</p>
+							<p class="tag">{t.coaches.achievements}</p>
 							<ul class="mt-4 grid gap-3">
 								{#each c.achievements as a (a)}<li class="flex gap-2 font-semibold">
 										<Icon name="bolt" size={18} class="mt-1 shrink-0" />{a}
@@ -66,7 +70,7 @@
 								class="toggle grid h-11 w-11 shrink-0 place-items-center bg-lime text-void"
 								aria-expanded={open === c.id}
 								aria-controls="coach-{c.id}"
-								aria-label="Регалії тренера: {c.name}"
+								aria-label={t.coaches.achAria(c.name)}
 								onclick={() => (open = open === c.id ? null : c.id)}
 							>
 								<Icon name={open === c.id ? 'close' : 'plus'} />

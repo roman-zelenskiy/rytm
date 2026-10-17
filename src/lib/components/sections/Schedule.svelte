@@ -1,18 +1,32 @@
 <script lang="ts">
 	import { flip } from 'svelte/animate';
 	import { fade, scale } from 'svelte/transition';
-	import { schedule, coaches, days, daysFull, directionLabel, type Slot } from '#lib/content.ts';
+	import {
+		schedule,
+		coaches,
+		days,
+		daysFull,
+		directionLabel,
+		bookingDirections,
+		t,
+		type Slot
+	} from '#lib/content.ts';
+	import Select from '#lib/components/ui/Select.svelte';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { reducedMotion } from '#lib/motion/env.ts';
 	import SectionTitle from '#lib/components/ui/SectionTitle.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
 
 	const filters = [
-		{ id: 'all', label: 'Усі' },
-		{ id: 'functional', label: 'Функціонал' },
-		{ id: 'boxing', label: 'Бокс' },
-		{ id: 'stretching', label: 'Стретчинг' }
+		{ id: 'all', label: t.sched.all },
+		{ id: 'functional', label: directionLabel('functional') },
+		{ id: 'boxing', label: directionLabel('boxing') },
+		{ id: 'stretching', label: directionLabel('stretching') }
 	] as const;
+	const coachOptions = [
+		{ value: 'all' as const, label: t.sched.allCoaches },
+		...coaches.filter((c) => c.id !== 'artem').map((c) => ({ value: c.id, label: c.name }))
+	];
 
 	let dir = $state<(typeof filters)[number]['id']>('all');
 	let coach = $state<'all' | Slot['coach']>('all');
@@ -25,36 +39,25 @@
 	);
 	const byDay = $derived(days.map((_, i) => visible.filter((s) => s.day === i)));
 	const coachName = (id: Slot['coach']) => coaches.find((c) => c.id === id)?.name ?? '';
-	const bookingName = {
-		functional: 'Функціональний тренінг',
-		boxing: 'Бокс',
-		stretching: 'Стретчинг'
-	} as const;
+	const bookingIndex = { functional: 0, boxing: 1, stretching: 2 } as const;
 	const anim = () => (reducedMotion() ? 0 : 1);
 
-	function plural(n: number) {
-		const m10 = n % 10;
-		const m100 = n % 100;
-		if (m10 === 1 && m100 !== 11) return 'заняття';
-		if (m10 >= 2 && m10 <= 4 && (m100 < 12 || m100 > 14)) return 'заняття';
-		return 'занять';
-	}
+	const plural = (n: number) => t.sched.classes(n);
 </script>
 
 <section id="rozklad" aria-labelledby="rozklad-title" class="relative bg-coal py-24 md:py-32">
 	<div class="wrap">
 		<div class="grid gap-8 lg:grid-cols-12 lg:items-end">
 			<div class="lg:col-span-7">
-				<SectionTitle eyebrow="Тиждень у залі" title="Розклад" id="rozklad-title" />
+				<SectionTitle eyebrow={t.sched.eyebrow} title={t.sched.title} id="rozklad-title" />
 			</div>
 			<p class="text-lg text-ash lg:col-span-5">
-				Групи до 10 осіб, тому місця розбирають швидко. Оберіть напрям або тренера — і записуйтесь
-				на вільний слот.
+				{t.sched.lead}
 			</p>
 		</div>
 
 		<div class="mt-10 flex flex-wrap items-end gap-4">
-			<div role="radiogroup" aria-label="Напрям" class="flex flex-wrap gap-2">
+			<div role="radiogroup" aria-label={t.sched.dirLabel} class="flex flex-wrap gap-2">
 				{#each filters as f (f.id)}
 					<label class="chip" class:on={dir === f.id}>
 						<input
@@ -67,28 +70,22 @@
 					</label>
 				{/each}
 			</div>
-			<div class="relative">
-				<label for="sched-coach" class="sr-only">Тренер</label>
-				<select id="sched-coach" bind:value={coach} class="sel">
-					<option value="all">Усі тренери</option>
-					{#each coaches.filter((c) => c.id !== 'artem') as c (c.id)}<option value={c.id}
-							>{c.name}</option
-						>{/each}
-				</select>
-				<Icon
-					name="right"
-					size={16}
-					class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 rotate-90 text-lime"
-				/>
-			</div>
+			<Select
+				id="sched-coach"
+				class="w-56"
+				label={t.sched.coachLabel}
+				options={coachOptions}
+				bind:value={coach}
+			/>
 			<p class="tag ml-auto text-ash" aria-live="polite">
 				{visible.length}
-				{plural(visible.length)} на тиждень
+				{plural(visible.length)}
+				{t.sched.perWeek}
 			</p>
 		</div>
 
 		<!-- мобільні вкладки днів -->
-		<div role="group" aria-label="День тижня" class="mt-8 grid grid-cols-7 gap-1 lg:hidden">
+		<div role="group" aria-label={t.sched.dayLabel} class="mt-8 grid grid-cols-7 gap-1 lg:hidden">
 			{#each days as d, i (d)}
 				<button
 					type="button"
@@ -126,20 +123,20 @@
 								<p class="text-sm text-ash">{coachName(s.coach)} · {s.level}</p>
 								<div class="mt-2 flex items-center justify-between gap-2">
 									<span class="text-sm font-bold {s.spots <= 2 ? 'text-blaze' : 'text-lime'}"
-										>{s.spots} {s.spots === 1 ? 'місце' : s.spots < 5 ? 'місця' : 'місць'}</span
+										>{t.sched.spots(s.spots)}</span
 									>
 									<button
 										type="button"
 										class="book"
-										onclick={() => booking.show(bookingName[s.dir])}
-										aria-label="Записатися: {directionLabel(s.dir)}, {daysFull[s.day]} {s.time}"
+										onclick={() => booking.show(bookingDirections[bookingIndex[s.dir]])}
+										aria-label={t.sched.bookAria(directionLabel(s.dir), daysFull[s.day], s.time)}
 									>
 										<Icon name="arrow" size={18} />
 									</button>
 								</div>
 							</li>
 						{:else}
-							<li class="py-4 text-sm text-ash">Немає занять</li>
+							<li class="py-4 text-sm text-ash">{t.sched.none}</li>
 						{/each}
 					</ul>
 				</section>
@@ -178,18 +175,6 @@
 	.chip:has(input:focus-visible) {
 		outline: 3px solid var(--color-lime);
 		outline-offset: 3px;
-	}
-	.sel {
-		appearance: none;
-		min-height: 2.9rem;
-		padding: 0 2.5rem 0 1rem;
-		background: var(--color-steel);
-		color: var(--color-chalk);
-		font-family: var(--font-display);
-		font-weight: 900;
-		font-size: 1.05rem;
-		text-transform: uppercase;
-		border: 0;
 	}
 	.daytab {
 		padding: 0.6rem 0;

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { img } from '#lib/images.ts';
-	import { studio } from '#lib/content.ts';
+	import { studio, t } from '#lib/content.ts';
 	import { kinetic, inview } from '#lib/motion/actions.ts';
 	import BookingForm from '#lib/components/ui/BookingForm.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -26,28 +26,28 @@
 	<div class="wrap grid gap-12 lg:grid-cols-12 lg:items-center">
 		<div class="lg:col-span-7">
 			<p class="tag text-lime" use:inview data-rise>
-				<span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>Пробне тренування
+				<span class="inline-block h-[3px] w-8 bg-lime" aria-hidden="true"></span>{t.bsec.eyebrow}
 			</p>
 			<h2 id="zapys-title" class="mega mt-4 text-[clamp(4rem,12vw,11rem)]">
 				<span class="block origin-left" use:kinetic>
-					<span class="block" use:inview data-slash>Перше —</span>
-					<span class="block text-lime" use:inview={90} data-slash>0 гривень</span>
+					<span class="block" use:inview data-slash>{t.bsec.l1}</span>
+					<span class="block text-lime" use:inview={90} data-slash>{t.bsec.l2}</span>
 				</span>
 			</h2>
 			<ul class="mt-8 grid max-w-lg gap-3 text-lg">
 				<li class="flex gap-3">
-					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />Знайомство з тренером і замір рівня
+					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />{t.bsec.p1}
 				</li>
 				<li class="flex gap-3">
-					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />Повноцінне тренування в міні-групі
+					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />{t.bsec.p2}
 				</li>
 				<li class="flex gap-3">
-					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />План на 8 тижнів — навіть якщо не
-					залишитесь
+					<Icon name="bolt" class="mt-1 shrink-0 text-lime" />{t.bsec.p3}
 				</li>
 			</ul>
 			<p class="mt-8 text-ash">
-				Зручніше зателефонувати? <a
+				{t.bsec.call}
+				<a
 					href={studio.phoneHref}
 					rel="external"
 					class="font-display text-xl font-black whitespace-nowrap text-chalk underline decoration-lime decoration-4 underline-offset-4"
@@ -57,8 +57,8 @@
 		</div>
 		<div class="lg:col-span-5">
 			<div class="form-card bg-void/90 p-6 backdrop-blur-sm md:p-9">
-				<p class="mega text-4xl">Запис на пробне</p>
-				<p class="mt-1 text-sm text-ash">Відповімо протягом 15 хвилин у робочий час.</p>
+				<p class="mega text-4xl">{t.bookTitle}</p>
+				<p class="mt-1 text-sm text-ash">{t.bsec.reply}</p>
 				<div class="mt-7"><BookingForm idPrefix="sec" /></div>
 			</div>
 		</div>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Tween } from 'svelte/motion';
 	import { cubicOut } from 'svelte/easing';
-	import { plans, periods, type Period } from '#lib/content.ts';
+	import { plans, periods, t, type Period } from '#lib/content.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { reducedMotion } from '#lib/motion/env.ts';
 	import { inview } from '#lib/motion/actions.ts';
@@ -19,7 +19,7 @@
 		plans.forEach((p, i) => tweens[i].set(p.price[period], { duration: instant ? 0 : 520 }));
 	});
 
-	const fmt = (n: number) => Math.round(n).toLocaleString('uk-UA').replace(/\s/g, ' ');
+	const fmt = (n: number) => Math.round(n).toLocaleString(t.locale).replace(/\s/g, ' ');
 	const idx = $derived(periods.findIndex((p) => p.id === period));
 </script>
 
@@ -27,12 +27,12 @@
 	<div class="wrap">
 		<div class="grid gap-8 lg:grid-cols-12 lg:items-end">
 			<div class="lg:col-span-7">
-				<SectionTitle eyebrow="Ціни без зірочок" title="Тарифи" id="taryfy-title" />
+				<SectionTitle eyebrow={t.price.eyebrow} title={t.price.title} id="taryfy-title" />
 			</div>
 			<div class="lg:col-span-5 lg:justify-self-end">
 				<div
 					role="radiogroup"
-					aria-label="Період оплати"
+					aria-label={t.price.period}
 					class="switch relative grid grid-cols-3 bg-coal p-1.5"
 					style:--idx={idx}
 				>
@@ -48,7 +48,7 @@
 			</div>
 		</div>
 
-		<p class="sr-only" aria-live="polite">Ціни показано для періоду: {periods[idx].label}</p>
+		<p class="sr-only" aria-live="polite">{t.price.shownFor(periods[idx].label)}</p>
 		<ul class="mt-14 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
 			{#each plans as p, i (p.id)}
 				<li
@@ -59,21 +59,23 @@
 				>
 					{#if p.featured}<span
 							class="tag absolute top-0 right-6 -translate-y-1/2 bg-blaze px-3 py-2 text-void"
-							>Хіт</span
+							>{t.price.hit}</span
 						>{/if}
 					<h3 class="mega text-5xl">{p.name}</h3>
 					<p class="mt-1 text-sm opacity-80">{p.sub}</p>
 					<p class="mt-6 flex items-baseline gap-2">
 						<span class="mega text-7xl tabular-nums">{fmt(tweens[i].current)}</span>
-						<span class="tag">грн{p.perMonth ? '/міс' : ''}</span>
+						<span class="tag">{t.cur}{p.perMonth ? t.price.perMo : ''}</span>
 					</p>
 					<p class="mt-1 min-h-6 text-sm opacity-80">
 						{#if p.perMonth && period !== 'month'}
-							{fmt(p.price[period] * months[period])} грн за {period === 'year'
-								? 'рік'
-								: '3 місяці'} · економія {fmt((p.price.month - p.price[period]) * months[period])} грн
+							{t.price.total(
+								fmt(p.price[period] * months[period]),
+								period === 'year',
+								fmt((p.price.month - p.price[period]) * months[period])
+							)}
 						{:else if !p.perMonth}
-							ціна не залежить від періоду
+							{t.price.flat}
 						{/if}
 					</p>
 					<ul class="mt-6 grid flex-1 content-start gap-2.5">
@@ -84,14 +86,13 @@
 					<Button
 						variant={p.featured ? 'ghost' : 'lime'}
 						class="mt-8 w-full"
-						onclick={() => booking.show()}>Почати з пробного</Button
+						onclick={() => booking.show()}>{t.price.start}</Button
 					>
 				</li>
 			{/each}
 		</ul>
 		<p class="mt-6 text-sm text-ash">
-			Перше тренування — безкоштовно для всіх тарифів. Оплата карткою, на рахунок ФОП або частинами
-			до 6 місяців.
+			{t.price.note}
 		</p>
 	</div>
 </section>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { studio } from '#lib/content.ts';
+
 	let { class: cls = '' }: { class?: string } = $props();
 </script>
 
@@ -8,5 +10,5 @@
 		<path d="M11 26 20 0h4l-9 26Z" fill="currentColor" />
 		<path d="M19 26 28 0h2l-9 26Z" fill="currentColor" opacity=".5" />
 	</svg>
-	<span class="mega text-[1.9rem] leading-none tracking-wide">Ритм</span>
+	<span class="mega text-[1.9rem] leading-none tracking-wide">{studio.name}</span>
 </span>

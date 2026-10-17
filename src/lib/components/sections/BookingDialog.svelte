@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { t } from '#lib/content.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import BookingForm from '#lib/components/ui/BookingForm.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
@@ -23,14 +24,14 @@
 			<button
 				type="button"
 				class="absolute top-4 right-4 grid h-11 w-11 place-items-center bg-steel hover:bg-lime hover:text-void"
-				aria-label="Закрити"
+				aria-label={t.close}
 				onclick={() => dialog.close()}
 			>
 				<Icon name="close" />
 			</button>
-			<p class="tag text-lime">Пробне — 0 грн</p>
-			<h2 id="booking-title" class="mega mt-3 pr-12 text-6xl">Запис на пробне</h2>
-			<p class="mt-2 text-ash">55–60 хвилин у міні-групі. Заміримо рівень і підберемо програму.</p>
+			<p class="tag text-lime">{t.dlg.tag}</p>
+			<h2 id="booking-title" class="mega mt-3 pr-12 text-6xl">{t.bookTitle}</h2>
+			<p class="mt-2 text-ash">{t.dlg.lead}</p>
 			<div class="mt-7"><BookingForm preset={booking.preset} idPrefix="dlg" /></div>
 		</div>
 	{/if}

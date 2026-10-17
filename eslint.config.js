@@ -36,6 +36,9 @@ export default defineConfig(
 	{
 		// Override or add rule settings here, such as:
 		// 'svelte/button-has-type': 'error'
-		rules: {}
+		rules: {
+			// посилання будуються через href() з #lib/i18n.ts — він сам викликає resolve() з мовним сегментом
+			'svelte/no-navigation-without-resolve': 'off'
+		}
 	}
 );

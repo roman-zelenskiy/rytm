@@ -1,8 +1,9 @@
 <script lang="ts">
 	import { onMount, tick } from 'svelte';
-	import { resolve } from '$app/paths';
 	import { scale } from 'svelte/transition';
-	import { bookingDirections, days, daysFull } from '#lib/content.ts';
+	import { bookingDirections, days, daysFull, t } from '#lib/content.ts';
+	import { href } from '#lib/i18n.ts';
+	import Select from './Select.svelte';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { formatPhone, isValidPhone } from '#lib/phone.ts';
 	import { reducedMotion } from '#lib/motion/env.ts';
@@ -28,16 +29,12 @@
 	const errors = $derived({
 		name:
 			name.trim().length < 2
-				? 'Як до вас звертатися?'
+				? t.form.errName
 				: !/^[\p{L}\s'’ʼ-]+$/u.test(name.trim())
-					? 'Лише літери, будь ласка'
+					? t.form.errLetters
 					: '',
-		phone: !phone
-			? 'Вкажіть номер — передзвонимо й підтвердимо'
-			: !isValidPhone(phone)
-				? 'Номер неповний: +380 (XX) XXX-XX-XX'
-				: '',
-		day: day ? '' : 'Оберіть зручний день'
+		phone: !phone ? t.form.errPhone : !isValidPhone(phone) ? t.form.errPhoneShort : '',
+		day: day ? '' : t.form.errDay
 	});
 	const show = (f: Field) => (touched[f] || attempted) && !!errors[f];
 
@@ -96,25 +93,23 @@
 		<div class="stamp mx-auto grid h-24 w-24 place-items-center bg-lime text-void">
 			<Icon name="check" size={44} />
 		</div>
-		<p class="mega mt-6 text-5xl">Ви в ритмі, {name.trim().split(/\s+/)[0]}!</p>
+		<p class="mega mt-6 text-5xl">{t.form.done(name.trim().split(/\s+/)[0])}</p>
 		<p class="mx-auto mt-3 max-w-sm text-ash">
-			Адміністратор напише в Telegram або передзвонить протягом 15 хвилин і закріпить місце на {daysFull[
-				days.indexOf(day as (typeof days)[number])
-			]?.toLowerCase()}.
+			{t.form.doneText(daysFull[days.indexOf(day as (typeof days)[number])] ?? '')}
 		</p>
 		<button type="button" class="tag mt-6 text-lime underline underline-offset-4" onclick={reset}
-			>Записати ще когось</button
+			>{t.form.another}</button
 		>
 	</div>
 {:else}
 	<form novalidate {onsubmit} class="grid gap-5" aria-busy={status === 'loading'}>
 		<div class="field" class:shake={shaking.name} onanimationend={() => (shaking.name = false)}>
-			<label for="{idPrefix}-name">Ім’я</label>
+			<label for="{idPrefix}-name">{t.form.name}</label>
 			<input
 				id="{idPrefix}-name"
 				bind:value={name}
 				autocomplete="given-name"
-				placeholder="Як до вас звертатися"
+				placeholder={t.form.namePh}
 				onblur={() => (touched.name = true)}
 				aria-invalid={show('name')}
 				aria-describedby={show('name') ? `${idPrefix}-name-err` : undefined}
@@ -123,7 +118,7 @@
 		</div>
 
 		<div class="field" class:shake={shaking.phone} onanimationend={() => (shaking.phone = false)}>
-			<label for="{idPrefix}-phone">Телефон</label>
+			<label for="{idPrefix}-phone">{t.form.phone}</label>
 			<input
 				id="{idPrefix}-phone"
 				type="tel"
@@ -144,17 +139,14 @@
 		</div>
 
 		<div class="field">
-			<label for="{idPrefix}-dir">Напрям</label>
-			<div class="relative">
-				<select id="{idPrefix}-dir" bind:value={direction}>
-					{#each bookingDirections as d (d)}<option value={d}>{d}</option>{/each}
-				</select>
-				<Icon
-					name="right"
-					size={18}
-					class="pointer-events-none absolute top-1/2 right-4 -translate-y-1/2 rotate-90 text-lime"
-				/>
-			</div>
+			<label for="{idPrefix}-dir">{t.form.dir}</label>
+			<Select
+				id="{idPrefix}-dir"
+				size="lg"
+				label={t.form.dir}
+				options={bookingDirections.map((d) => ({ value: d, label: d }))}
+				bind:value={direction}
+			/>
 		</div>
 
 		<fieldset
@@ -163,7 +155,7 @@
 			onanimationend={() => (shaking.day = false)}
 			aria-describedby={show('day') ? `${idPrefix}-day-err` : undefined}
 		>
-			<legend>Зручний день</legend>
+			<legend>{t.form.day}</legend>
 			<div class="grid grid-cols-7 gap-1.5">
 				{#each days as d, i (d)}
 					<label class="day" class:on={day === d}>
@@ -188,7 +180,7 @@
 
 		{#if status === 'offline'}
 			<p class="err border-l-4 border-blaze bg-blaze/10 px-4 py-3" role="alert">
-				Немає з’єднання з інтернетом. Перевірте мережу або зателефонуйте нам.
+				{t.form.offline}
 			</p>
 		{/if}
 
@@ -198,15 +190,15 @@
 					class="h-4 w-4 animate-spin rounded-full border-2 border-void border-r-transparent"
 					aria-hidden="true"
 				></span>
-				Надсилаємо…
+				{t.form.sending}
 			{:else}
-				Записатися на пробне <Icon name="arrow" />
+				{t.bookTrial} <Icon name="arrow" />
 			{/if}
 		</Button>
 		<p class="text-center text-xs text-ash">
-			Натискаючи кнопку, ви погоджуєтеся з <a
-				href={resolve('/polityka-konfidentsiinosti')}
-				class="underline underline-offset-2">політикою конфіденційності</a
+			{t.form.consent}
+			<a href={href('/polityka-konfidentsiinosti')} class="underline underline-offset-2"
+				>{t.form.consentLink}</a
 			>
 		</p>
 	</form>
@@ -230,8 +222,7 @@
 		font-size: 0.95rem;
 		margin-bottom: 0.4rem;
 	}
-	input:not([type='radio']),
-	select {
+	input:not([type='radio']) {
 		width: 100%;
 		min-height: 3.4rem;
 		padding: 0 1rem;
@@ -242,8 +233,7 @@
 		font: inherit;
 		transition: border-color 0.2s;
 	}
-	input:focus,
-	select:focus {
+	input:focus {
 		outline: none;
 		border-color: var(--color-lime);
 	}

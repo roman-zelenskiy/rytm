@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { siteUrl, studio } from '#lib/content.ts';
+	import { siteUrl, studio, t } from '#lib/content.ts';
+	import { lang } from '#lib/i18n.ts';
 
 	let {
 		title,
@@ -15,7 +16,9 @@
 		schema?: object;
 	} = $props();
 
-	const url = $derived(siteUrl + path);
+	// канонічна адреса — з мовою; альтернативи для пошуковиків — обидві мови
+	const url = $derived(`${siteUrl}/${lang}${path}`);
+	const alt = (l: string) => `${siteUrl}/${l}${path}`;
 	const image = `${siteUrl}/og-image.jpg`;
 	// JSON-LD усередині <script>: екрануємо «<», щоб текст не міг закрити тег
 	const json = $derived(schema ? JSON.stringify(schema).replace(/</g, '\\u003c') : '');
@@ -31,7 +34,10 @@
 	/>
 	<link rel="canonical" href={url} />
 	<meta property="og:type" content="website" />
-	<meta property="og:locale" content="uk_UA" />
+	<link rel="alternate" hreflang="uk" href={alt('uk')} />
+	<link rel="alternate" hreflang="en" href={alt('en')} />
+	<link rel="alternate" hreflang="x-default" href={alt('en')} />
+	<meta property="og:locale" content={t.ogLocale} />
 	<meta property="og:site_name" content={studio.legalName} />
 	<meta property="og:title" content={title} />
 	<meta property="og:description" content={description} />
@@ -39,10 +45,7 @@
 	<meta property="og:image" content={image} />
 	<meta property="og:image:width" content="1200" />
 	<meta property="og:image:height" content="630" />
-	<meta
-		property="og:image:alt"
-		content="Фітнес-студія «Ритм» у Києві — перше тренування безкоштовно"
-	/>
+	<meta property="og:image:alt" content={t.seo.ogAlt} />
 	<meta name="twitter:card" content="summary_large_image" />
 	<meta name="twitter:title" content={title} />
 	<meta name="twitter:description" content={description} />

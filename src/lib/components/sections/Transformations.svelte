@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { transformations } from '#lib/content.ts';
+	import { transformations, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { inview, kinetic } from '#lib/motion/actions.ts';
 	import SectionTitle from '#lib/components/ui/SectionTitle.svelte';
@@ -12,18 +12,17 @@
 	class="relative overflow-hidden bg-coal py-24 md:py-32"
 >
 	<div class="wrap">
-		<SectionTitle eyebrow="Результати клієнтів" title="Трансфор-" accent="мації" id="tr-title" />
+		<SectionTitle eyebrow={t.tr.eyebrow} title={t.tr.title} accent={t.tr.accent} id="tr-title" />
 		<p class="mt-6 max-w-xl text-lg text-ash">
-			Реальні цифри за 8 тижнів — з замірами на старті й у фіналі. Імена та фото — з дозволу
-			клієнтів.
+			{t.tr.lead}
 		</p>
 
 		<div class="mt-16 grid gap-20">
-			{#each transformations as t, i (t.id)}
+			{#each transformations as tr, i (tr.id)}
 				{@const flip = i % 2 === 1}
 				<article
 					class="grid items-center gap-8 lg:grid-cols-12 lg:gap-12"
-					aria-labelledby="tr-{t.id}"
+					aria-labelledby="tr-{tr.id}"
 				>
 					<div
 						class={[
@@ -35,28 +34,28 @@
 					>
 						<enhanced:img
 							loading="lazy"
-							src={img.transformations[t.id]}
-							alt={t.alt}
+							src={img.transformations[tr.id]}
+							alt={tr.alt}
 							sizes="(min-width: 1024px) 40vw, 100vw"
 							class="h-full w-full object-cover"
 						/>
 						<div class="grain pointer-events-none absolute inset-0 overflow-hidden"></div>
 						<span class="tag absolute top-4 left-4 bg-lime px-3 py-2 text-void"
-							>{t.weeks} тижнів</span
+							>{t.tr.weeks(tr.weeks)}</span
 						>
 					</div>
 
 					<div class={['lg:col-span-7', flip && 'lg:order-1 lg:col-span-7 lg:col-start-1']}>
-						<p class="tag text-ash">{t.plan}</p>
-						<h3 id="tr-{t.id}" class="mt-2">
+						<p class="tag text-ash">{tr.plan}</p>
+						<h3 id="tr-{tr.id}" class="mt-2">
 							<span class="mega block text-[clamp(5rem,14vw,12rem)] text-lime" use:kinetic
-								>{t.headline}</span
+								>{tr.headline}</span
 							>
-							<span class="mega mt-2 block text-4xl">{t.name}</span>
+							<span class="mega mt-2 block text-4xl">{tr.name}</span>
 						</h3>
 
 						<dl class="mt-8 grid gap-6">
-							{#each t.metrics as m (m.label)}
+							{#each tr.metrics as m (m.label)}
 								<!-- група dt/dd: у <dl> допустимі лише dt, dd або div, що містить тільки їх -->
 								<div class="grid grid-cols-[1fr_auto] items-baseline gap-x-2 gap-y-3">
 									<dt class="tag text-ash">{m.label}</dt>
@@ -64,14 +63,14 @@
 										<span class="text-ash line-through decoration-blaze decoration-4">{m.from}</span
 										>
 										<span class="mx-1 text-lime" aria-hidden="true">→</span><span class="sr-only"
-											>, стало
+											>{t.tr.became}
 										</span>{m.to}
 									</dd>
 									<dd class="col-span-2">
 										<Segments
 											total={12}
 											value={Math.round(m.progress * 12)}
-											label="{m.label}: прогрес {Math.round(m.progress * 100)}%"
+											label={t.tr.progress(m.label, Math.round(m.progress * 100))}
 										/>
 									</dd>
 								</div>
@@ -79,7 +78,7 @@
 						</dl>
 
 						<blockquote class="mt-8 border-l-4 border-blaze pl-4 text-lg text-chalk/90">
-							«{t.quote}»
+							{t.q(tr.quote)}
 						</blockquote>
 					</div>
 				</article>

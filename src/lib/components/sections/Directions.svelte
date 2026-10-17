@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { directions } from '#lib/content.ts';
+	import { bookingDirections, directions, t } from '#lib/content.ts';
 	import { img } from '#lib/images.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import { inview, kinetic } from '#lib/motion/actions.ts';
@@ -9,11 +9,12 @@
 	import Button from '#lib/components/ui/Button.svelte';
 	import Icon from '#lib/components/ui/Icon.svelte';
 
-	const bookingName: Record<(typeof directions)[number]['id'], string> = {
-		functional: 'Функціональний тренінг',
-		boxing: 'Бокс',
-		stretching: 'Стретчинг',
-		personal: 'Персональне тренування'
+	// напрям у формі запису — за тим самим порядком, що й у bookingDirections
+	const bookingIndex: Record<(typeof directions)[number]['id'], number> = {
+		functional: 0,
+		boxing: 1,
+		stretching: 2,
+		personal: 3
 	};
 
 	let root: HTMLElement;
@@ -71,7 +72,12 @@
 	class="relative py-24 md:py-32"
 >
 	<div class="wrap">
-		<SectionTitle eyebrow="Напрями" title="Обери" accent="свій ритм" id="napriamy-title" />
+		<SectionTitle
+			eyebrow={t.dir.eyebrow}
+			title={t.dir.title}
+			accent={t.dir.accent}
+			id="napriamy-title"
+		/>
 	</div>
 
 	<div class="mt-12 md:mt-20">
@@ -122,18 +128,18 @@
 					<div class="panel relative bg-coal p-6 md:p-10 lg:w-[44%]" use:inview={120} data-rise>
 						<div class="flex items-center justify-between gap-4">
 							<span class="tag text-ash">0{i + 1} / 0{directions.length}</span>
-							<span class="tag text-lime">від {d.priceFrom} грн</span>
+							<span class="tag text-lime">{t.dir.from(d.priceFrom)}</span>
 						</div>
 						<h3
 							id="dir-{d.id}"
 							class="mega mt-5 text-[clamp(2.3rem,10.5vw,3.75rem)] hyphens-auto"
-							lang="uk"
+							lang={t.langCode}
 						>
 							{d.short}
 						</h3>
 						<p class="mt-4 text-[1.05rem] text-chalk/90">{d.lead}</p>
 						<p class="mt-4 border-l-4 border-blaze pl-3 text-ash">
-							<strong class="text-chalk">Кому:</strong>
+							<strong class="text-chalk">{t.dir.forWhom}</strong>
 							{d.forWhom}
 						</p>
 						<ul class="mt-5 grid gap-2">
@@ -146,16 +152,16 @@
 						>
 							<p class="tag text-ash">⏱ {d.duration}</p>
 							<div class="flex items-center gap-3">
-								<span class="tag text-ash">Інтенсивність</span>
-								<span class="flex gap-1" role="img" aria-label="Інтенсивність {d.intensity} з 5">
+								<span class="tag text-ash">{t.dir.intensity}</span>
+								<span class="flex gap-1" role="img" aria-label={t.dir.intensityOf(d.intensity)}>
 									{#each [1, 2, 3, 4, 5] as n (n)}<span
 											class="h-4 w-2 -skew-x-[20deg] {n <= d.intensity ? 'bg-lime' : 'bg-iron'}"
 										></span>{/each}
 								</span>
 							</div>
 						</div>
-						<Button class="mt-7" onclick={() => booking.show(bookingName[d.id])}
-							>Спробувати безкоштовно</Button
+						<Button class="mt-7" onclick={() => booking.show(bookingDirections[bookingIndex[d.id]])}
+							>{t.dir.try}</Button
 						>
 					</div>
 				</div>

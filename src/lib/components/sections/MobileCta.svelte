@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { studio } from '#lib/content.ts';
+	import { studio, t } from '#lib/content.ts';
 	import { booking } from '#lib/booking.svelte.ts';
 	import Icon from '#lib/components/ui/Icon.svelte';
 
@@ -23,19 +23,19 @@
 </script>
 
 <aside
-	aria-label="Швидкий запис"
+	aria-label={t.mcta.label}
 	class="cta fixed inset-x-0 bottom-0 z-40 flex gap-2 bg-void/95 p-2 backdrop-blur-sm lg:hidden"
 	class:shown
 	inert={!shown}
 >
 	<button type="button" class="btn btn-lime flex-1" onclick={() => booking.show()}
-		>Пробне безкоштовно</button
+		>{t.header.trial}</button
 	>
 	<a
 		href={studio.phoneHref}
 		rel="external"
 		class="grid w-14 place-items-center bg-steel"
-		aria-label="Зателефонувати {studio.phone}"><Icon name="phone" /></a
+		aria-label={t.mcta.call(studio.phone)}><Icon name="phone" /></a
 	>
 </aside>
 
